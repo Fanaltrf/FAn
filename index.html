@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>معرض كود فن التكنولوجيا الحديثة</title>
+  <meta name="description" content="معرض أعمال فن التكنولوجيا الحديثة: تصميم مواقع، تطبيقات موبايل، وهوية بصرية. تواصل عبر واتساب لطلب خدمة." />
+  <style>
+    body{margin:0;background:#0f0c29;color:#fff;font-family:Segoe UI,Tahoma,Arial}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    h1{margin:10px 0 6px}
+    .muted{opacity:.85}
+
+    /* ✅ عرض صورتين بجانب بعض بشكل متساوي */
+    .grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;margin-top:18px}
+
+    .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    img{width:100%;height:160px;object-fit:cover;display:block;background:#1a1a2e}
+    .p{padding:12px;flex-grow:1;display:flex;flex-direction:column}
+    .t{color:#a29bfe;margin:0 0 8px;font-size:1.1rem}
+    .desc-text{font-size:0.9rem;opacity:0.8;margin-bottom:12px;flex-grow:1}
+    .btns{display:flex;gap:8px;margin-top:auto}
+    a.btn{flex:1;text-align:center;padding:10px 5px;border-radius:12px;text-decoration:none;font-weight:800;font-size:0.85rem}
+    a.demo{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+    a.wa{background:#25D366;color:#fff}
+
+    @media (max-width: 480px) {
+      .grid{gap:10px}
+      img{height:130px}
+      .t{font-size:1rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>معرض كود فن التكنولوجيا الحديثة</h1>
+    <div class="muted">أعمال وخدمات رقمية — المعاينة تفتح صفحة داخلية، والطلب عبر واتساب.</div>
+
+    <div id="grid" class="grid"></div>
+    <div id="msg" class="muted" style="margin-top:14px"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyArg6aPnPyd0x5C2HbZ8o5wpVmhmmSYS6Q",
+      authDomain: "fn1998.firebaseapp.com",
+      projectId: "fn1998",
+      storageBucket: "fn1998.firebasestorage.app",
+      messagingSenderId: "326727010464",
+      appId: "1:326727010464:web:831654b2593ae59d5821c5",
+      measurementId: "G-8W5C8ZXJZE"
+    };
+
+    const WHATSAPP = "https://wa.me/9647729373260";
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const grid = document.getElementById("grid");
+    const msg  = document.getElementById("msg");
+
+    function esc(s){
+      return (s+"").replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    function extractDriveFileId(url){
+      if(!url) return "";
+      const u = (url+"").trim();
+      let m = u.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || 
+              u.match(/[?&]id=([a-zA-Z0-9_-]+)/) || 
+              u.match(/open\?id=([a-zA-Z0-9_-]+)/);
+      return (m && m[1]) ? m[1] : "";
+    }
+
+    function driveToEmbed(url, kindHint){
+      const fileId = extractDriveFileId(url);
+      if(!fileId) return { kind: "unknown", src: url };
+      const kind = (kindHint === "video" || (!kindHint && !/\.(png|jpe?g|webp|gif|svg)/i.test(url))) ? "video" : "image";
+      
+      if(kind === "image"){
+        return { kind: "image", src: `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200` };
+      }
+      return { kind: "video", src: `https://drive.google.com/file/d/${fileId}/preview` };
+    }
+
+    function openPreviewPage(it){
+      const title = esc(it.title || "معاينة");
+      const desc  = esc(it.description || "");
+      const isOpen = !!it.isOpen;
+      const siteUrl = (it.demoUrl || "").trim();
+
+      const videosArr = Array.isArray(it.driveVideos) ? it.driveVideos : [];
+      const imagesArr = Array.isArray(it.driveImages) ? it.driveImages : [];
+
+      const videoIframes = videosArr.map(v => {
+        const url = (typeof v === "string") ? v : (v?.url || "");
+        const o = driveToEmbed(url, "video");
+        return o.src ? `<div class="vid"><iframe src="${o.src}" allowfullscreen></iframe></div>` : "";
+      }).join("");
+
+      const imageCards = imagesArr.map(img => {
+        const url = (typeof img === "string") ? img : (img?.url || "");
+        const o = driveToEmbed(url, "image");
+        return o.src ? `<img class="im" src="${o.src}" alt="${title}">` : "";
+      }).join("");
+
+      // ✅ تعديل CSS صفحة المعاينة لضمان التوسيط الكامل والملائمة
+      const pageHtml = `<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title}</title>
+<style>
+  body{margin:0;padding:0;background:#0f0c29;color:#fff;font-family:Segoe UI,Tahoma,Arial;display:flex;justify-content:center;min-height:100vh}
+  .wrap{width:100%;max-width:600px;padding:15px;box-sizing:border-box}
+  h1{margin:10px 0 15px;color:#a29bfe;text-align:center;font-size:1.5rem}
+  .box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;margin-top:14px;width:100%}
+  .pad{padding:14px}
+  .sectionTitle{margin:0 0 10px;font-weight:900;border-right:3px solid #a29bfe;padding-right:8px}
+  .videos{display:grid;grid-template-columns:1fr;gap:12px}
+  .vid iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#000;display:block}
+  .imgs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .im{width:100%;height:150px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.12);display:block}
+  .btnRow{display:flex;gap:10px;margin-top:12px}
+  .btn{flex:1;text-align:center;padding:14px 5px;border-radius:12px;text-decoration:none;font-weight:900;font-size:0.95rem}
+  .go{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+  .wa{background:#25D366;color:#fff}
+  .muted{opacity:.8;font-size:0.9rem;line-height:1.5}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>${title}</h1>
+    <div class="box"><div class="pad"><div class="sectionTitle">الفيديوهات</div><div class="videos">${videoIframes || "<div class='muted'>لا يوجد فيديوهات حالياً.</div>"}</div></div></div>
+    <div class="box"><div class="pad"><div class="sectionTitle">الصور</div><div class="imgs">${imageCards || "<div class='muted'>لا يوجد صور حالياً.</div>"}</div></div></div>
+    <div class="box"><div class="pad"><div class="sectionTitle">وصف الخدمة</div><div class="muted">${desc || "—"}</div>
+    <div class="btnRow"><a class="btn go" href="#" id="goBtn">دخول للموقع</a><a class="btn wa" href="${esc(it.whatsappLink || WHATSAPP)}" target="_blank">طلب واتساب</a></div>
+    <div id="stateNote" style="margin-top:12px; text-align:center; color:#ff7675; font-weight:bold; font-size:0.85rem"></div></div></div>
+  </div>
+<script>
+  const isOpen = ${JSON.stringify(isOpen)};
+  const siteUrl = ${JSON.stringify(siteUrl)};
+  document.getElementById("goBtn").onclick = (e) => {
+    e.preventDefault();
+    if(!isOpen) { alert("مغلق ملكية لصاحب الموقع.."); return; }
+    if(!siteUrl) { alert("لا يوجد رابط مضاف."); return; }
+    window.location.href = siteUrl;
+  };
+  if(!isOpen) document.getElementById("stateNote").textContent = "مغلق ملكية لصاحب الموقع..";
+<\/script>
+</body></html>`;
+
+      const w = window.open("", "_blank");
+      if(!w) return alert("يرجى السماح بالنوافذ المنبثقة.");
+      w.document.write(pageHtml);
+      w.document.close();
+    }
+
+    async function load(){
+      msg.textContent = "جاري تحميل الأعمال...";
+      try{
+        const snap = await db.collection("projects").orderBy("createdAt","desc").get();
+        if(snap.empty){ msg.textContent = "لا يوجد أعمال حالياً."; return; }
+
+        const items = [];
+        snap.forEach(d => items.push(d.data()));
+
+        grid.innerHTML = items.map((it, idx) => {
+          const thumb = driveToEmbed(it.imageData, "image").src;
+          return `
+          <div class="card">
+            ${thumb ? `<img src="${thumb}" alt="${esc(it.title)}">` : `<div style="height:160px; background:#1a1a2e"></div>`}
+            <div class="p">
+              <h3 class="t">${esc(it.title||"بدون عنوان")}</h3>
+              <div class="desc-text">${esc(it.description||"")}</div>
+              <div class="btns">
+                <a class="btn demo" href="#" data-i="${idx}">معاينة</a>
+                <a class="btn wa" href="${(it.whatsappLink||WHATSAPP)}" target="_blank">طلب</a>
+              </div>
+            </div>
+          </div>`;
+        }).join("");
+
+        grid.querySelectorAll('a.demo').forEach(a => {
+          a.onclick = (e) => {
+            e.preventDefault();
+            openPreviewPage(items[a.dataset.i]);
+          };
+        });
+        msg.textContent = "";
+      }catch(e){ msg.textContent = "خطأ: " + e.message; }
+    }
+    load();
+  </script>
+</body>
+</html>
