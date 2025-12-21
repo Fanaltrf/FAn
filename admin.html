@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة الأدمن - معرض كود فن التكنولوجيا الحديثة</title>
+  <style>
+    :root{
+      --bg:#0f0c29; --card:rgba(255,255,255,0.08);
+      --border:rgba(255,255,255,0.12); --text:#fff;
+      --p:#6c5ce7; --s:#a29bfe; --ok:#25D366; --danger:#ff4d4d;
+    }
+    *{box-sizing:border-box;font-family:Segoe UI,Tahoma,Arial}
+    body{margin:0;background:radial-gradient(circle at top,#1e1b4b,var(--bg),#050505);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 18px}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;backdrop-filter:blur(12px)}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    @media(max-width:780px){.grid2{grid-template-columns:1fr}}
+    .btn{
+      width:100%;padding:14px;border:0;border-radius:14px;cursor:pointer;
+      font-weight:800;color:#fff;background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.18); transition:.2s; text-align:center;
+    }
+    .btn:hover{transform:translateY(-2px);border-color:var(--s)}
+    .btn.primary{background:linear-gradient(135deg,var(--p),var(--s));border:0}
+    .btn.ok{background:var(--ok);border:0}
+    .btn.danger{background:rgba(255,77,77,0.15);border:1px solid rgba(255,77,77,0.35)}
+    input, textarea, select{
+      width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);
+      background:rgba(0,0,0,0.25); color:#fff; outline:none; margin-bottom: 5px;
+    }
+    textarea{min-height:80px;resize:vertical}
+    label{display:block;margin:10px 0 5px;font-weight:700; color:var(--s); font-size:0.9rem}
+    .hidden{display:none !important}
+    .hr{height:1px;background:rgba(255,255,255,0.10);margin:14px 0}
+    .thumb{width:100%;max-height:200px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,0.12)}
+    .list{display:grid;gap:10px}
+    .item{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.10);font-size:.75rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="brand">لوحة الأدمن</div>
+        <div class="muted" style="font-size: 0.8rem; opacity: 0.7;">تجهيز الأعمال للمعرض</div>
+      </div>
+      <button id="logoutBtn" class="btn danger hidden" style="max-width:120px; padding: 10px;">خروج</button>
+    </div>
+
+    <div id="loginCard" class="card">
+      <h3 style="margin:0 0 10px;color:var(--s)">دخول الإدارة</h3>
+      <div class="muted" style="font-size: 0.8rem; margin-bottom: 15px;">يرجى إدخال كلمة السر الخاصة بك للبدء.</div>
+      <label>كلمة السر</label>
+      <input id="password" type="password" placeholder="••••••••"/>
+      <button id="loginBtn" class="btn primary" style="margin-top:15px">دخول</button>
+      <div id="loginMsg" style="margin-top:10px;color:var(--danger); font-size:0.8rem"></div>
+    </div>
+
+    <div id="panel" class="card hidden">
+      <div class="grid2">
+        <button id="openAdd" class="btn ok">إضافة عمل جديد</button>
+        <button id="openList" class="btn">إدارة الأعمال</button>
+      </div>
+
+      <div id="addBox" class="hidden" style="margin-top:14px">
+        <div class="hr"></div>
+        <label>صورة الغلاف (Thumbnail)</label>
+        <input id="imgInput" type="file" accept="image/*"/>
+        <img id="preview" class="thumb hidden" style="margin-top:10px"/>
+
+        <div class="grid2">
+          <div>
+            <label>عنوان العمل</label>
+            <input id="title" type="text" placeholder="اسم الخدمة"/>
+          </div>
+          <div>
+            <label>السعر (بالدولار الأمريكي)</label>
+            <input id="price" type="number" placeholder="مثلاً: 50"/>
+          </div>
+        </div>
+
+        <label>التقييم (النجوم)</label>
+        <select id="stars">
+          <option value="5">★★★★★ (5 نجوم)</option>
+          <option value="4">★★★★☆ (4 نجوم)</option>
+          <option value="3">★★★☆☆ (3 نجوم)</option>
+          <option value="2">★★☆☆☆ (2 نجوم)</option>
+          <option value="1">★☆☆☆☆ (1 نجمة)</option>
+        </select>
+
+        <label>الوصف (يظهر داخل المعاينة)</label>
+        <textarea id="description" placeholder="اشرح تفاصيل الخدمة..."></textarea>
+
+        <label>رابط الموقع المباشر</label>
+        <input id="demoUrl" type="url" placeholder="https://example.com"/>
+
+        <label>حالة الدخول للموقع</label>
+        <select id="isOpen">
+          <option value="true">مفتوح (يسمح بالدخول)</option>
+          <option value="false">مغلق (حقوق ملكية)</option>
+        </select>
+
+        <label>روابط فيديوهات درايف (كل رابط في سطر)</label>
+        <textarea id="driveVideos" placeholder="رابط 1&#10;رابط 2"></textarea>
+
+        <label>روابط صور المعرض (كل رابط في سطر)</label>
+        <textarea id="driveImages" placeholder="رابط 1&#10;رابط 2"></textarea>
+
+        <div style="height:12px"></div>
+        <button id="saveBtn" class="btn primary">حفظ ونشر العمل ✅</button>
+        <div id="saveMsg" style="margin-top:10px; font-size:0.9rem"></div>
+      </div>
+
+      <div id="listBox" class="hidden" style="margin-top:14px">
+        <div class="hr"></div>
+        <div id="list" class="list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyArg6aPnPyd0x5C2HbZ8o5wpVmhmmSYS6Q",
+      authDomain: "fn1998.firebaseapp.com",
+      projectId: "fn1998",
+      storageBucket: "fn1998.firebasestorage.app",
+      messagingSenderId: "326727010464",
+      appId: "1:326727010464:web:831654b2593ae59d5821c5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const WHATSAPP = "https://wa.me/9647729373260";
+    const MASTER_PASS = "BbZzAaMm"; // كلمة السر المطلوبة
+
+    const loginCard = document.getElementById("loginCard"), panel = document.getElementById("panel"), logoutBtn = document.getElementById("logoutBtn");
+    const imgInput = document.getElementById("imgInput"), preview = document.getElementById("preview"), saveBtn = document.getElementById("saveBtn"), saveMsg = document.getElementById("saveMsg");
+    const titleEl = document.getElementById("title"), priceEl = document.getElementById("price"), starsEl = document.getElementById("stars");
+    const descEl = document.getElementById("description"), demoUrlEl = document.getElementById("demoUrl"), isOpenEl = document.getElementById("isOpen");
+    const vidsEl = document.getElementById("driveVideos"), imgsEl = document.getElementById("driveImages");
+
+    let imageDataURL = "";
+
+    // ✅ نظام الدخول اليدوي بكلمة السر
+    function checkAuthStatus() {
+      if(sessionStorage.getItem("isAdmin") === "true") {
+        loginCard.classList.add("hidden");
+        panel.classList.remove("hidden");
+        logoutBtn.classList.remove("hidden");
+        showAdd();
+      } else {
+        panel.classList.add("hidden");
+        loginCard.classList.remove("hidden");
+        logoutBtn.classList.add("hidden");
+      }
+    }
+
+    document.getElementById("loginBtn").onclick = () => {
+      const pass = document.getElementById("password").value;
+      if(pass === MASTER_PASS) {
+        sessionStorage.setItem("isAdmin", "true");
+        checkAuthStatus();
+      } else {
+        document.getElementById("loginMsg").textContent = "كلمة السر غير صحيحة!";
+      }
+    };
+
+    logoutBtn.onclick = () => {
+      sessionStorage.removeItem("isAdmin");
+      location.reload();
+    };
+
+    // تشغيل الفحص عند التحميل
+    checkAuthStatus();
+
+    // التنقل
+    document.getElementById("openAdd").onclick = showAdd;
+    document.getElementById("openList").onclick = showList;
+    function showAdd() { addBox.classList.remove("hidden"); listBox.classList.add("hidden"); }
+    function showList() { listBox.classList.remove("hidden"); addBox.classList.add("hidden"); loadList(); }
+
+    // معالجة الصورة
+    imgInput.onchange = e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => { imageDataURL = ev.target.result; preview.src = imageDataURL; preview.classList.remove("hidden"); };
+      reader.readAsDataURL(file);
+    };
+
+    // الحفظ
+    saveBtn.onclick = async () => {
+      if(!imageDataURL || !titleEl.value) return alert("الرجاء إكمال البيانات الأساسية");
+      saveMsg.textContent = "جاري الحفظ...";
+      
+      const vids = vidsEl.value.split('\n').map(l => l.trim()).filter(l => l !== "");
+      const imgs = imgsEl.value.split('\n').map(l => l.trim()).filter(l => l !== "");
+
+      try {
+        await addDoc(collection(db, "projects"), {
+          title: titleEl.value.trim(),
+          price: priceEl.value || "0",
+          stars: parseInt(starsEl.value),
+          description: descEl.value.trim(),
+          demoUrl: demoUrlEl.value.trim(),
+          isOpen: isOpenEl.value === "true",
+          driveVideos: vids,
+          driveImages: imgs,
+          imageData: imageDataURL,
+          whatsappLink: WHATSAPP,
+          createdAt: serverTimestamp()
+        });
+        alert("تم النشر بنجاح! ✅");
+        location.reload();
+      } catch(e) { saveMsg.textContent = "خطأ: " + e.message; }
+    };
+
+    async function loadList() {
+      const listEl = document.getElementById("list");
+      listEl.innerHTML = "جاري التحميل...";
+      const snap = await getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")));
+      listEl.innerHTML = "";
+      snap.forEach(d => {
+        const r = d.data();
+        const div = document.createElement("div");
+        div.className = "card"; div.style.marginBottom = "10px";
+        div.innerHTML = `
+          <div class="item">
+            <img src="${r.imageData}" style="width:50px; height:50px; border-radius:8px; object-fit:cover">
+            <div style="flex:1; margin-right:10px">
+              <div style="font-weight:bold">${r.title}</div>
+              <div class="pill">$${r.price}</div>
+            </div>
+            <button class="btn danger" style="width:70px; padding:5px">حذف</button>
+          </div>`;
+        div.querySelector(".danger").onclick = async () => {
+          if(confirm("حذف هذا العمل نهائياً؟")){ await deleteDoc(doc(db, "projects", d.id)); loadList(); }
+        };
+        listEl.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
