@@ -1,43 +1,73 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>معرض كود فن التكنولوجيا الحديثة</title>
-  <meta name="description" content="معرض أعمال فن التكنولوجيا الحديثة: تصميم مواقع، تطبيقات موبايل، وهوية بصرية. تواصل عبر واتساب لطلب خدمة." />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
-    body{margin:0;background:#0f0c29;color:#fff;font-family:Segoe UI,Tahoma,Arial}
-    .wrap{max-width:1100px;margin:0 auto;padding:18px}
-    h1{margin:10px 0 6px}
-    .muted{opacity:.85}
+    :root { --p: #6c5ce7; --s: #a29bfe; --bg: #0f0c29; }
+    body{margin:0;background:var(--bg);color:#fff;font-family:Segoe UI,Tahoma,Arial;overflow-x:hidden}
+    
+    /* ✅ شاشة الصلاة على محمد وآل محمد */
+    #splash-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg); z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 20px; box-sizing: border-box;
+    }
+    #splash-screen h2 {
+      color: var(--s); font-size: 1.8rem; line-height: 1.6;
+      text-shadow: 0 0 15px rgba(162, 155, 254, 0.5);
+    }
 
-    /* ✅ عرض صورتين بجانب بعض بشكل متساوي */
-    .grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;margin-top:18px}
+    /* الواجهة الرئيسية */
+    #main-view{padding:18px;max-width:1100px;margin:0 auto; display: none;} /* مخفية حتى تنتهي الشاشة */
+    h1{margin:20px 0; text-align:center; font-size:1.4rem; color:var(--s)}
+    .grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px}
 
     .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-    img{width:100%;height:160px;object-fit:cover;display:block;background:#1a1a2e}
-    .p{padding:12px;flex-grow:1;display:flex;flex-direction:column}
-    .t{color:#a29bfe;margin:0 0 8px;font-size:1.1rem}
-    .desc-text{font-size:0.9rem;opacity:0.8;margin-bottom:12px;flex-grow:1}
-    .btns{display:flex;gap:8px;margin-top:auto}
-    a.btn{flex:1;text-align:center;padding:10px 5px;border-radius:12px;text-decoration:none;font-weight:800;font-size:0.85rem}
-    a.demo{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
-    a.wa{background:#25D366;color:#fff}
+    .card img{width:100%;height:140px;object-fit:cover;background:#1a1a2e}
+    .p-body{padding:12px;flex-grow:1}
+    .t{color:#fff;margin:0 0 5px;font-size:0.95rem;font-weight:bold;height:40px;overflow:hidden}
+    
+    .meta-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .stars{color:#f1c40f;font-size:0.8rem}
+    .price{background:var(--p);padding:2px 8px;border-radius:6px;font-size:0.8rem;font-weight:bold}
 
-    @media (max-width: 480px) {
-      .grid{gap:10px}
-      img{height:130px}
-      .t{font-size:1rem}
-    }
+    .btns{display:flex;gap:8px}
+    .btn{flex:1;text-align:center;padding:10px 2px;border-radius:10px;text-decoration:none;font-weight:800;font-size:0.8rem;cursor:pointer;border:0;color:#fff}
+    .btn-demo{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+    .btn-wa{background:#25D366}
+
+    /* واجهة المعاينة الداخلية */
+    #preview-view{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:999;overflow-y:auto;padding:15px;box-sizing:border-box}
+    .back-btn{display:inline-block;padding:10px 20px;background:rgba(255,255,255,.1);border-radius:10px;margin-bottom:15px;cursor:pointer;font-weight:bold}
+    .desc-box{margin-top:15px;line-height:1.6;color:#ccc;font-size:0.95rem;white-space:pre-wrap}
+    .vids-grid{display:grid;gap:10px;margin-top:15px}
+    .vids-grid iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:0}
+    .imgs-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;margin-top:15px}
+    .imgs-grid img{width:100%;height:120px;object-fit:cover;border-radius:12px}
+
+    @media (max-width: 480px) { h1{font-size:1.1rem} .grid{gap:8px} #splash-screen h2{font-size: 1.4rem;} }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>معرض كود فن التكنولوجيا الحديثة</h1>
-    <div class="muted">أعمال وخدمات رقمية — المعاينة تفتح صفحة داخلية، والطلب عبر واتساب.</div>
 
+  <div id="splash-screen">
+    <h2 id="splash-text">اللهم صل على محمد وآل محمد <br><br> هل صليت على محمد وآل محمد اليوم؟</h2>
+  </div>
+
+  <div id="main-view">
+    <h1>. معرض كود فن التكلوجيا الحديث اعمالي الخاصة</h1>
     <div id="grid" class="grid"></div>
-    <div id="msg" class="muted" style="margin-top:14px"></div>
+    <div id="msg" style="text-align:center;margin-top:20px;opacity:0.5"></div>
+  </div>
+
+  <div id="preview-view">
+    <div class="back-btn" onclick="closePreview()">➔ رجوع للمعرض</div>
+    <div id="preview-content"></div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -54,149 +84,127 @@
       measurementId: "G-8W5C8ZXJZE"
     };
 
-    const WHATSAPP = "https://wa.me/9647729373260";
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const WHATSAPP = "https://wa.me/9647729373260";
 
-    const grid = document.getElementById("grid");
-    const msg  = document.getElementById("msg");
+    let allItems = [];
 
-    function esc(s){
-      return (s+"").replace(/[&<>"']/g, m => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[m]));
-    }
+    function esc(s){ return (s+"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 
-    function extractDriveFileId(url){
-      if(!url) return "";
-      const u = (url+"").trim();
-      let m = u.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || 
-              u.match(/[?&]id=([a-zA-Z0-9_-]+)/) || 
-              u.match(/open\?id=([a-zA-Z0-9_-]+)/);
+    function extractDriveId(url){
+      const m = (url+"").match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || (url+"").match(/[?&]id=([a-zA-Z0-9_-]+)/);
       return (m && m[1]) ? m[1] : "";
     }
 
-    function driveToEmbed(url, kindHint){
-      const fileId = extractDriveFileId(url);
-      if(!fileId) return { kind: "unknown", src: url };
-      const kind = (kindHint === "video" || (!kindHint && !/\.(png|jpe?g|webp|gif|svg)/i.test(url))) ? "video" : "image";
-      
-      if(kind === "image"){
-        return { kind: "image", src: `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200` };
-      }
-      return { kind: "video", src: `https://drive.google.com/file/d/${fileId}/preview` };
+    function flipBtn(el, callback) {
+      gsap.to(el, { rotationY: 360, duration: 0.5, onComplete: () => {
+        gsap.set(el, { rotationY: 0 });
+        callback();
+      }});
     }
 
-    function openPreviewPage(it){
-      const title = esc(it.title || "معاينة");
-      const desc  = esc(it.description || "");
-      const isOpen = !!it.isOpen;
-      const siteUrl = (it.demoUrl || "").trim();
-
-      const videosArr = Array.isArray(it.driveVideos) ? it.driveVideos : [];
-      const imagesArr = Array.isArray(it.driveImages) ? it.driveImages : [];
-
-      const videoIframes = videosArr.map(v => {
-        const url = (typeof v === "string") ? v : (v?.url || "");
-        const o = driveToEmbed(url, "video");
-        return o.src ? `<div class="vid"><iframe src="${o.src}" allowfullscreen></iframe></div>` : "";
-      }).join("");
-
-      const imageCards = imagesArr.map(img => {
-        const url = (typeof img === "string") ? img : (img?.url || "");
-        const o = driveToEmbed(url, "image");
-        return o.src ? `<img class="im" src="${o.src}" alt="${title}">` : "";
-      }).join("");
-
-      // ✅ تعديل CSS صفحة المعاينة لضمان التوسيط الكامل والملائمة
-      const pageHtml = `<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title}</title>
-<style>
-  body{margin:0;padding:0;background:#0f0c29;color:#fff;font-family:Segoe UI,Tahoma,Arial;display:flex;justify-content:center;min-height:100vh}
-  .wrap{width:100%;max-width:600px;padding:15px;box-sizing:border-box}
-  h1{margin:10px 0 15px;color:#a29bfe;text-align:center;font-size:1.5rem}
-  .box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;margin-top:14px;width:100%}
-  .pad{padding:14px}
-  .sectionTitle{margin:0 0 10px;font-weight:900;border-right:3px solid #a29bfe;padding-right:8px}
-  .videos{display:grid;grid-template-columns:1fr;gap:12px}
-  .vid iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#000;display:block}
-  .imgs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .im{width:100%;height:150px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.12);display:block}
-  .btnRow{display:flex;gap:10px;margin-top:12px}
-  .btn{flex:1;text-align:center;padding:14px 5px;border-radius:12px;text-decoration:none;font-weight:900;font-size:0.95rem}
-  .go{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
-  .wa{background:#25D366;color:#fff}
-  .muted{opacity:.8;font-size:0.9rem;line-height:1.5}
-</style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>${title}</h1>
-    <div class="box"><div class="pad"><div class="sectionTitle">الفيديوهات</div><div class="videos">${videoIframes || "<div class='muted'>لا يوجد فيديوهات حالياً.</div>"}</div></div></div>
-    <div class="box"><div class="pad"><div class="sectionTitle">الصور</div><div class="imgs">${imageCards || "<div class='muted'>لا يوجد صور حالياً.</div>"}</div></div></div>
-    <div class="box"><div class="pad"><div class="sectionTitle">وصف الخدمة</div><div class="muted">${desc || "—"}</div>
-    <div class="btnRow"><a class="btn go" href="#" id="goBtn">دخول للموقع</a><a class="btn wa" href="${esc(it.whatsappLink || WHATSAPP)}" target="_blank">طلب واتساب</a></div>
-    <div id="stateNote" style="margin-top:12px; text-align:center; color:#ff7675; font-weight:bold; font-size:0.85rem"></div></div></div>
-  </div>
-<script>
-  const isOpen = ${JSON.stringify(isOpen)};
-  const siteUrl = ${JSON.stringify(siteUrl)};
-  document.getElementById("goBtn").onclick = (e) => {
-    e.preventDefault();
-    if(!isOpen) { alert("مغلق ملكية لصاحب الموقع.."); return; }
-    if(!siteUrl) { alert("لا يوجد رابط مضاف."); return; }
-    window.location.href = siteUrl;
-  };
-  if(!isOpen) document.getElementById("stateNote").textContent = "مغلق ملكية لصاحب الموقع..";
-<\/script>
-</body></html>`;
-
-      const w = window.open("", "_blank");
-      if(!w) return alert("يرجى السماح بالنوافذ المنبثقة.");
-      w.document.write(pageHtml);
-      w.document.close();
-    }
-
+    // ✅ دالة التحميل المعدلة لتناسب الشاشة الترحيبية
     async function load(){
-      msg.textContent = "جاري تحميل الأعمال...";
-      try{
-        const snap = await db.collection("projects").orderBy("createdAt","desc").get();
-        if(snap.empty){ msg.textContent = "لا يوجد أعمال حالياً."; return; }
+      try {
+        const snap = await db.collection("projects").orderBy("createdAt", "desc").get();
+        if(snap.empty) { return; }
+        
+        let html = "";
+        allItems = [];
+        snap.forEach(doc => {
+          const it = doc.data();
+          allItems.push(it);
+          const idx = allItems.length - 1;
+          const thumbId = extractDriveId(it.imageData);
+          const thumb = thumbId ? `https://drive.google.com/thumbnail?id=${thumbId}&sz=w800` : it.imageData;
+          const starIcon = "★".repeat(it.stars || 5) + "☆".repeat(5 - (it.stars || 5));
 
-        const items = [];
-        snap.forEach(d => items.push(d.data()));
-
-        grid.innerHTML = items.map((it, idx) => {
-          const thumb = driveToEmbed(it.imageData, "image").src;
-          return `
+          html += `
           <div class="card">
-            ${thumb ? `<img src="${thumb}" alt="${esc(it.title)}">` : `<div style="height:160px; background:#1a1a2e"></div>`}
-            <div class="p">
-              <h3 class="t">${esc(it.title||"بدون عنوان")}</h3>
-              <div class="desc-text">${esc(it.description||"")}</div>
+            <img src="${thumb}">
+            <div class="p-body">
+              <h3 class="t">${esc(it.title)}</h3>
+              <div class="meta-info">
+                <span class="stars">${starIcon}</span>
+                <span class="price">$${it.price || '0'}</span>
+              </div>
               <div class="btns">
-                <a class="btn demo" href="#" data-i="${idx}">معاينة</a>
-                <a class="btn wa" href="${(it.whatsappLink||WHATSAPP)}" target="_blank">طلب</a>
+                <div class="btn btn-demo" onclick="handlePreview(this, ${idx})">معاينة</div>
+                <div class="btn btn-wa" onclick="handleWA(this, '${it.whatsappLink || WHATSAPP}')">طلب</div>
               </div>
             </div>
           </div>`;
+        });
+        document.getElementById("grid").innerHTML = html;
+      } catch(e) { console.log("Firebase Error"); }
+    }
+
+    // ✅ التحكم في ظهور الشاشة الترحيبية
+    window.addEventListener('load', () => {
+      load(); // ابدأ تحميل البيانات في الخلفية فوراً
+      
+      setTimeout(() => {
+        gsap.to("#splash-screen", {
+          opacity: 0,
+          duration: 1,
+          onComplete: () => {
+            document.getElementById("splash-screen").style.display = "none";
+            document.getElementById("main-view").style.display = "block";
+            // أنيميشن بسيط لظهور الأعمال
+            gsap.from("#main-view", { opacity: 0, y: 20, duration: 1 });
+          }
+        });
+      }, 5000); // 5 ثوانٍ كما طلبت
+    });
+
+    window.handlePreview = (el, idx) => {
+      flipBtn(el, () => {
+        const it = allItems[idx];
+        const vids = Array.isArray(it.driveVideos) ? it.driveVideos : [];
+        const imgs = Array.isArray(it.driveImages) ? it.driveImages : [];
+
+        let vHtml = vids.map(v => {
+          const id = extractDriveId(v);
+          return id ? `<iframe src="https://drive.google.com/file/d/${id}/preview"></iframe>` : "";
         }).join("");
 
-        grid.querySelectorAll('a.demo').forEach(a => {
-          a.onclick = (e) => {
-            e.preventDefault();
-            openPreviewPage(items[a.dataset.i]);
-          };
-        });
-        msg.textContent = "";
-      }catch(e){ msg.textContent = "خطأ: " + e.message; }
-    }
-    load();
+        let iHtml = imgs.map(img => {
+          const id = extractDriveId(img);
+          return id ? `<img src="https://drive.google.com/thumbnail?id=${id}&sz=w1000">` : "";
+        }).join("");
+
+        document.getElementById("preview-content").innerHTML = `
+          <h2 style="color:var(--s)">${esc(it.title)}</h2>
+          <div class="meta-info" style="justify-content:flex-start; gap:20px">
+            <span class="stars" style="font-size:1.2rem">${"★".repeat(it.stars || 5)}</span>
+            <span class="price" style="font-size:1.1rem">السعر: $${it.price || '0'}</span>
+          </div>
+          <div class="desc-box">${esc(it.description)}</div>
+          <div class="vids-grid">${vHtml}</div>
+          <div class="imgs-grid">${iHtml}</div>
+          <div style="margin-top:20px">
+             ${it.isOpen 
+               ? `<a href="${it.demoUrl || '#'}" target="_blank" class="btn btn-demo" style="display:block; margin-bottom:10px; padding:15px; text-decoration:none">دخول للموقع المباشر</a>`
+               : `<div style="text-align:center; padding:12px; color:#ff7675; background:rgba(255,118,117,0.1); border-radius:10px; margin-bottom:10px; font-weight:bold; border:1px solid #ff7675">مغلق لخصوصية المالك..</div>`
+             }
+             <a href="${it.whatsappLink || WHATSAPP}" target="_blank" class="btn btn-wa" style="display:block; padding:15px; text-decoration:none">طلب هذه الخدمة الآن</a>
+          </div>
+        `;
+        document.getElementById("main-view").style.display = "none";
+        document.getElementById("preview-view").style.display = "block";
+        window.scrollTo(0,0);
+      });
+    };
+
+    window.handleWA = (el, link) => {
+      flipBtn(el, () => { window.open(link, "_blank"); });
+    };
+
+    window.closePreview = () => {
+      document.getElementById("preview-view").style.display = "none";
+      document.getElementById("main-view").style.display = "block";
+    };
   </script>
 </body>
 </html>
