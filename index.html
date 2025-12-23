@@ -2,209 +2,421 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>معرض كود فن التكنولوجيا الحديثة</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    :root { --p: #6c5ce7; --s: #a29bfe; --bg: #0f0c29; }
-    body{margin:0;background:var(--bg);color:#fff;font-family:Segoe UI,Tahoma,Arial;overflow-x:hidden}
+    :root {
+      --bg: #0f0c29;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --primary: #6c5ce7;
+      --secondary: #a29bfe;
+      --text: #ffffff;
+      --accent: #00cec9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
     
-    /* ✅ شاشة الصلاة على محمد وآل محمد */
+    body {
+      background: radial-gradient(circle at top, #30336b, var(--bg), #000);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 50px;
+      overflow-x: hidden;
+    }
+
+    /* --- شاشة الترحيب (Splash Screen) --- */
     #splash-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg); z-index: 10000;
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 20px; box-sizing: border-box;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      transition: opacity 1s ease-out;
     }
-    #splash-screen h2 {
-      color: var(--s); font-size: 1.8rem; line-height: 1.6;
-      text-shadow: 0 0 15px rgba(162, 155, 254, 0.5);
-    }
-
-    /* الواجهة الرئيسية */
-    #main-view{padding:18px;max-width:1100px;margin:0 auto; display: none;} /* مخفية حتى تنتهي الشاشة */
-    h1{margin:20px 0; text-align:center; font-size:1.4rem; color:var(--s)}
-    .grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px}
-
-    .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-    .card img{width:100%;height:140px;object-fit:cover;background:#1a1a2e}
-    .p-body{padding:12px;flex-grow:1}
-    .t{color:#fff;margin:0 0 5px;font-size:0.95rem;font-weight:bold;height:40px;overflow:hidden}
     
-    .meta-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .stars{color:#f1c40f;font-size:0.8rem}
-    .price{background:var(--p);padding:2px 8px;border-radius:6px;font-size:0.8rem;font-weight:bold}
+    .splash-text {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffd700; /* ذهبي */
+      text-align: center;
+      animation: pulse 1.5s infinite;
+    }
 
-    .btns{display:flex;gap:8px}
-    .btn{flex:1;text-align:center;padding:10px 2px;border-radius:10px;text-decoration:none;font-weight:800;font-size:0.8rem;cursor:pointer;border:0;color:#fff}
-    .btn-demo{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
-    .btn-wa{background:#25D366}
+    @keyframes pulse {
+      0% { opacity: 0.6; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.6; transform: scale(0.95); }
+    }
 
-    /* واجهة المعاينة الداخلية */
-    #preview-view{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:999;overflow-y:auto;padding:15px;box-sizing:border-box}
-    .back-btn{display:inline-block;padding:10px 20px;background:rgba(255,255,255,.1);border-radius:10px;margin-bottom:15px;cursor:pointer;font-weight:bold}
-    .desc-box{margin-top:15px;line-height:1.6;color:#ccc;font-size:0.95rem;white-space:pre-wrap}
-    .vids-grid{display:grid;gap:10px;margin-top:15px}
-    .vids-grid iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:0}
-    .imgs-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;margin-top:15px}
-    .imgs-grid img{width:100%;height:120px;object-fit:cover;border-radius:12px}
+    /* --- Header & Hero --- */
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    @media (max-width: 480px) { h1{font-size:1.1rem} .grid{gap:8px} #splash-screen h2{font-size: 1.4rem;} }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* --- Projects Grid --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+    .card-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .card-body { padding: 15px; }
+
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+    
+    .card-price {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: var(--primary);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .stars { color: #ffd700; font-size: 0.9rem; margin-bottom: 10px; }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+      text-decoration: none;
+    }
+    
+    .btn:hover { background: var(--primary); }
+
+    /* --- Modal (التفاصيل) --- */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.2);
+      width: 100%;
+      max-width: 700px;
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close-modal {
+      position: absolute; top: 15px; left: 15px;
+      background: rgba(255,255,255,0.1); border: none;
+      color: #fff; width: 30px; height: 30px; border-radius: 50%;
+      cursor: pointer; font-weight: bold;
+    }
+
+    /* --- Gallery Inside Modal --- */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .gallery-img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: 0.2s;
+    }
+    .gallery-img:hover { transform: scale(1.05); }
+
+    /* --- Buttons Inside Modal --- */
+    .action-btns {
+      display: flex; gap: 10px; margin-top: 20px;
+    }
+    .btn-buy { background: #25D366; color: #fff; flex: 1; }
+    .btn-demo { background: var(--primary); color: #fff; flex: 1; }
+    .btn-disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+
+    /* --- Search --- */
+    .search-box {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 15px 45px 15px 15px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+    .search-icon {
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,0.5);
+    }
+
   </style>
 </head>
 <body>
 
   <div id="splash-screen">
-    <h2 id="splash-text">اللهم صل على محمد وآل محمد <br><br> هل صليت على محمد وآل محمد اليوم؟</h2>
+    <div class="splash-text">اللهم صل على محمد وآل محمد</div>
   </div>
 
-  <div id="main-view">
-    <h1>. معرض كود فن التكلوجيا الحديث اعمالي الخاصة</h1>
-    <div id="grid" class="grid"></div>
-    <div id="msg" style="text-align:center;margin-top:20px;opacity:0.5"></div>
+  <div class="header">
+    <div class="logo">كود فن التكنولوجيا</div>
   </div>
 
-  <div id="preview-view">
-    <div class="back-btn" onclick="closePreview()">➔ رجوع للمعرض</div>
-    <div id="preview-content"></div>
+  <div class="container">
+    
+    <div class="search-box">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن مشروع أو كود...">
+    </div>
+
+    <div id="projectsList" class="grid">
+      <div style="text-align:center; grid-column: 1/-1; padding: 20px;">جاري تحميل الأعمال...</div>
+    </div>
+
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <div id="projectModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">✕</button>
+      
+      <img id="mImage" src="" style="width:100%; max-height:300px; object-fit:cover; border-radius:12px; margin-bottom:15px;">
+      
+      <h2 id="mTitle" style="margin-bottom:10px;">عنوان المشروع</h2>
+      <div id="mStars" class="stars">★★★★★</div>
+      <div id="mPrice" style="color:var(--accent); font-weight:bold; font-size:1.2rem; margin-bottom:15px;">$0</div>
+      
+      <p id="mDesc" style="color:#ddd; line-height:1.6; font-size:0.95rem; white-space: pre-wrap;">وصف المشروع...</p>
 
-  <script>
+      <h4 style="margin-top:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">صور من داخل العمل</h4>
+      <div id="mGallery" class="gallery-grid"></div>
+
+      <div id="mVideos" style="margin-top:15px; display:flex; flex-direction:column; gap:5px;"></div>
+
+      <div class="action-btns">
+        <a id="mDemoBtn" href="#" target="_blank" class="btn btn-demo">معاينة مباشرة 👁️</a>
+        <a id="mBuyBtn" href="#" target="_blank" class="btn btn-buy">شراء الآن (واتساب) <i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyArg6aPnPyd0x5C2HbZ8o5wpVmhmmSYS6Q",
       authDomain: "fn1998.firebaseapp.com",
       projectId: "fn1998",
       storageBucket: "fn1998.firebasestorage.app",
       messagingSenderId: "326727010464",
-      appId: "1:326727010464:web:831654b2593ae59d5821c5",
-      measurementId: "G-8W5C8ZXJZE"
+      appId: "1:326727010464:web:831654b2593ae59d5821c5"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const WHATSAPP = "https://wa.me/9647729373260";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    let allItems = [];
+    let allProjects = [];
 
-    function esc(s){ return (s+"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
-
-    function extractDriveId(url){
-      const m = (url+"").match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || (url+"").match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      return (m && m[1]) ? m[1] : "";
-    }
-
-    function flipBtn(el, callback) {
-      gsap.to(el, { rotationY: 360, duration: 0.5, onComplete: () => {
-        gsap.set(el, { rotationY: 0 });
-        callback();
-      }});
-    }
-
-    // ✅ دالة التحميل المعدلة لتناسب الشاشة الترحيبية
-    async function load(){
-      try {
-        const snap = await db.collection("projects").orderBy("createdAt", "desc").get();
-        if(snap.empty) { return; }
-        
-        let html = "";
-        allItems = [];
-        snap.forEach(doc => {
-          const it = doc.data();
-          allItems.push(it);
-          const idx = allItems.length - 1;
-          const thumbId = extractDriveId(it.imageData);
-          const thumb = thumbId ? `https://drive.google.com/thumbnail?id=${thumbId}&sz=w800` : it.imageData;
-          const starIcon = "★".repeat(it.stars || 5) + "☆".repeat(5 - (it.stars || 5));
-
-          html += `
-          <div class="card">
-            <img src="${thumb}">
-            <div class="p-body">
-              <h3 class="t">${esc(it.title)}</h3>
-              <div class="meta-info">
-                <span class="stars">${starIcon}</span>
-                <span class="price">$${it.price || '0'}</span>
-              </div>
-              <div class="btns">
-                <div class="btn btn-demo" onclick="handlePreview(this, ${idx})">معاينة</div>
-                <div class="btn btn-wa" onclick="handleWA(this, '${it.whatsappLink || WHATSAPP}')">طلب</div>
-              </div>
-            </div>
-          </div>`;
-        });
-        document.getElementById("grid").innerHTML = html;
-      } catch(e) { console.log("Firebase Error"); }
-    }
-
-    // ✅ التحكم في ظهور الشاشة الترحيبية
+    // --- 1. إخفاء شاشة الترحيب بعد 3 ثواني ---
     window.addEventListener('load', () => {
-      load(); // ابدأ تحميل البيانات في الخلفية فوراً
-      
       setTimeout(() => {
-        gsap.to("#splash-screen", {
-          opacity: 0,
-          duration: 1,
-          onComplete: () => {
-            document.getElementById("splash-screen").style.display = "none";
-            document.getElementById("main-view").style.display = "block";
-            // أنيميشن بسيط لظهور الأعمال
-            gsap.from("#main-view", { opacity: 0, y: 20, duration: 1 });
-          }
-        });
-      }, 5000); // 5 ثوانٍ كما طلبت
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 1000); // وقت التلاشي
+      }, 3000); // 3 ثواني انتظار
     });
 
-    window.handlePreview = (el, idx) => {
-      flipBtn(el, () => {
-        const it = allItems[idx];
-        const vids = Array.isArray(it.driveVideos) ? it.driveVideos : [];
-        const imgs = Array.isArray(it.driveImages) ? it.driveImages : [];
+    // --- 2. تحميل البيانات ---
+    async function loadProjects() {
+      const container = document.getElementById('projectsList');
+      try {
+        const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        allProjects = [];
+        querySnapshot.forEach((doc) => {
+          allProjects.push({ id: doc.id, ...doc.data() });
+        });
 
-        let vHtml = vids.map(v => {
-          const id = extractDriveId(v);
-          return id ? `<iframe src="https://drive.google.com/file/d/${id}/preview"></iframe>` : "";
-        }).join("");
+        renderProjects(allProjects);
 
-        let iHtml = imgs.map(img => {
-          const id = extractDriveId(img);
-          return id ? `<img src="https://drive.google.com/thumbnail?id=${id}&sz=w1000">` : "";
-        }).join("");
+      } catch (error) {
+        console.error("Error:", error);
+        container.innerHTML = '<div style="text-align:center; width:100%">حدث خطأ في تحميل البيانات</div>';
+      }
+    }
 
-        document.getElementById("preview-content").innerHTML = `
-          <h2 style="color:var(--s)">${esc(it.title)}</h2>
-          <div class="meta-info" style="justify-content:flex-start; gap:20px">
-            <span class="stars" style="font-size:1.2rem">${"★".repeat(it.stars || 5)}</span>
-            <span class="price" style="font-size:1.1rem">السعر: $${it.price || '0'}</span>
-          </div>
-          <div class="desc-box">${esc(it.description)}</div>
-          <div class="vids-grid">${vHtml}</div>
-          <div class="imgs-grid">${iHtml}</div>
-          <div style="margin-top:20px">
-             ${it.isOpen 
-               ? `<a href="${it.demoUrl || '#'}" target="_blank" class="btn btn-demo" style="display:block; margin-bottom:10px; padding:15px; text-decoration:none">دخول للموقع المباشر</a>`
-               : `<div style="text-align:center; padding:12px; color:#ff7675; background:rgba(255,118,117,0.1); border-radius:10px; margin-bottom:10px; font-weight:bold; border:1px solid #ff7675">مغلق لخصوصية المالك..</div>`
-             }
-             <a href="${it.whatsappLink || WHATSAPP}" target="_blank" class="btn btn-wa" style="display:block; padding:15px; text-decoration:none">طلب هذه الخدمة الآن</a>
+    // --- 3. عرض الكروت ---
+    function renderProjects(projects) {
+      const container = document.getElementById('projectsList');
+      container.innerHTML = '';
+
+      if(projects.length === 0) {
+        container.innerHTML = '<div style="text-align:center; width:100%">لا توجد أعمال حالياً</div>';
+        return;
+      }
+
+      projects.forEach(p => {
+        const starsHTML = '★'.repeat(p.stars) + '☆'.repeat(5 - p.stars);
+        
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${p.imageData}" class="card-img" loading="lazy">
+          <div class="card-price">$${p.price}</div>
+          <div class="card-body">
+            <div class="stars">${starsHTML}</div>
+            <div class="card-title">${p.title}</div>
+            <button class="btn" onclick="openProject('${p.id}')">التفاصيل والشراء</button>
           </div>
         `;
-        document.getElementById("main-view").style.display = "none";
-        document.getElementById("preview-view").style.display = "block";
-        window.scrollTo(0,0);
+        container.appendChild(div);
       });
+    }
+
+    // --- 4. البحث ---
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const val = e.target.value.toLowerCase();
+      const filtered = allProjects.filter(p => p.title.toLowerCase().includes(val));
+      renderProjects(filtered);
+    });
+
+    // --- 5. فتح المودال (التفاصيل) ---
+    window.openProject = (id) => {
+      const p = allProjects.find(x => x.id === id);
+      if(!p) return;
+
+      document.getElementById('mImage').src = p.imageData;
+      document.getElementById('mTitle').innerText = p.title;
+      document.getElementById('mPrice').innerText = "$" + p.price;
+      document.getElementById('mDesc').innerText = p.description;
+      document.getElementById('mStars').innerText = '★'.repeat(p.stars) + '☆'.repeat(5 - p.stars);
+
+      // زر المعاينة
+      const demoBtn = document.getElementById('mDemoBtn');
+      if(p.isOpen) {
+        demoBtn.href = p.demoUrl;
+        demoBtn.classList.remove('btn-disabled');
+        demoBtn.innerText = "معاينة مباشرة 👁️";
+        demoBtn.style.pointerEvents = "auto";
+      } else {
+        demoBtn.href = "#";
+        demoBtn.classList.add('btn-disabled');
+        demoBtn.innerText = "المعاينة مغلقة (حقوق خاصة)";
+        demoBtn.style.pointerEvents = "none";
+      }
+
+      // زر الشراء (واتساب)
+      const msg = `مرحباً، أرغب بشراء العمل: ${p.title} بسعر ${p.price}$`;
+      document.getElementById('mBuyBtn').href = `${p.whatsappLink}?text=${encodeURIComponent(msg)}`;
+
+      // --- تعديل: عرض صور المعرض (Base64) ---
+      const galleryBox = document.getElementById('mGallery');
+      galleryBox.innerHTML = '';
+      if(p.driveImages && Array.isArray(p.driveImages)) {
+        p.driveImages.forEach(imgData => {
+          const img = document.createElement('img');
+          img.src = imgData; // هنا نستخدم البيانات المباشرة
+          img.className = 'gallery-img';
+          img.onclick = () => window.open(imgData); // فتح الصورة بالحجم الكامل
+          galleryBox.appendChild(img);
+        });
+      } else {
+        galleryBox.innerHTML = '<div style="font-size:0.8rem; color:#777;">لا توجد صور إضافية</div>';
+      }
+
+      // عرض الفيديوهات (روابط)
+      const videoBox = document.getElementById('mVideos');
+      videoBox.innerHTML = '';
+      if(p.driveVideos && Array.isArray(p.driveVideos)) {
+        p.driveVideos.forEach((vidUrl, index) => {
+          const a = document.createElement('a');
+          a.href = vidUrl;
+          a.target = "_blank";
+          a.className = "btn";
+          a.style.background = "#333";
+          a.style.marginTop = "5px";
+          a.innerText = `🎥 فيديو توضيحي ${index + 1}`;
+          videoBox.appendChild(a);
+        });
+      }
+
+      document.getElementById('projectModal').style.display = 'flex';
     };
 
-    window.handleWA = (el, link) => {
-      flipBtn(el, () => { window.open(link, "_blank"); });
+    window.closeModal = () => {
+      document.getElementById('projectModal').style.display = 'none';
     };
 
-    window.closePreview = () => {
-      document.getElementById("preview-view").style.display = "none";
-      document.getElementById("main-view").style.display = "block";
-    };
+    // بدء التحميل
+    loadProjects();
+
   </script>
 </body>
 </html>
