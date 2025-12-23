@@ -40,7 +40,6 @@
     .list{display:grid;gap:10px}
     .item{display:flex;gap:10px;align-items:center;justify-content:space-between}
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.10);font-size:.75rem}
-    /* ستايل لمعاينة صور المعرض */
     .gallery-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .gallery-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
   </style>
@@ -157,6 +156,35 @@
     let imageDataURL = ""; // صورة الغلاف
     let galleryImagesData = []; // مصفوفة صور المعرض
 
+    // دالة لضغط الصور (ضغط عالي جداً 5 أضعاف)
+    const compressImage = (file, quality = 0.2, maxWidth = 300) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = event => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            // تصغير الأبعاد بشكل كبير
+            if (width > height) {
+              if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+            } else {
+              if (height > maxWidth) { width *= maxWidth / height; height = maxWidth; }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            // ضغط الجودة إلى 0.2
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+        };
+      });
+    };
+
     // نظام الدخول
     function checkAuthStatus() {
       if(sessionStorage.getItem("isAdmin") === "true") {
@@ -193,34 +221,30 @@
     function showAdd() { addBox.classList.remove("hidden"); listBox.classList.add("hidden"); }
     function showList() { listBox.classList.remove("hidden"); addBox.classList.add("hidden"); loadList(); }
 
-    // معالجة صورة الغلاف (Thumbnail)
-    imgInput.onchange = e => {
+    // معالجة صورة الغلاف (ضغط قوي 0.3)
+    imgInput.onchange = async e => {
       const file = e.target.files[0];
       if(!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => { imageDataURL = ev.target.result; preview.src = imageDataURL; preview.classList.remove("hidden"); };
-      reader.readAsDataURL(file);
+      imageDataURL = await compressImage(file, 0.3, 400);
+      preview.src = imageDataURL;
+      preview.classList.remove("hidden");
     };
 
-    // معالجة صور المعرض (تعديل: إضافة تراكمية لا نهائية)
-    galleryInput.onchange = e => {
-      // لا نقوم بتصفير المصفوفة هنا للسماح بالإضافة
+    // معالجة صور المعرض (ضغط قوي جداً 0.2 وعرض 300)
+    galleryInput.onchange = async e => {
       const files = e.target.files;
       if (!files.length) return;
 
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const b64 = ev.target.result;
-          galleryImagesData.push(b64); // إضافة للصور الموجودة
-          
-          // إنشاء معاينة صغيرة وإضافتها للقائمة الموجودة
-          const img = document.createElement("img");
-          img.src = b64;
-          galleryPreview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
+      for (const file of Array.from(files)) {
+        // ضغط شديد للصور المتعددة
+        const compressedBase64 = await compressImage(file, 0.2, 300);
+        
+        galleryImagesData.push(compressedBase64);
+        
+        const img = document.createElement("img");
+        img.src = compressedBase64;
+        galleryPreview.appendChild(img);
+      }
     };
 
     // الحفظ
@@ -239,7 +263,7 @@
           demoUrl: demoUrlEl.value.trim(),
           isOpen: isOpenEl.value === "true",
           driveVideos: vids,
-          driveImages: galleryImagesData, // حفظ جميع الصور المضافة
+          driveImages: galleryImagesData,
           imageData: imageDataURL,
           whatsappLink: WHATSAPP,
           createdAt: serverTimestamp()
