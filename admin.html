@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -39,6 +40,9 @@
     .list{display:grid;gap:10px}
     .item{display:flex;gap:10px;align-items:center;justify-content:space-between}
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.10);font-size:.75rem}
+    /* ستايل لمعاينة صور المعرض */
+    .gallery-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .gallery-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
   </style>
 </head>
 <body>
@@ -107,8 +111,9 @@
         <label>روابط فيديوهات درايف (كل رابط في سطر)</label>
         <textarea id="driveVideos" placeholder="رابط 1&#10;رابط 2"></textarea>
 
-        <label>روابط صور المعرض (كل رابط في سطر)</label>
-        <textarea id="driveImages" placeholder="رابط 1&#10;رابط 2"></textarea>
+        <label>صور المعرض (إضافة لا نهائية)</label>
+        <input id="galleryInput" type="file" accept="image/*" multiple />
+        <div id="galleryPreview" class="gallery-preview"></div>
 
         <div style="height:12px"></div>
         <button id="saveBtn" class="btn primary">حفظ ونشر العمل ✅</button>
@@ -138,17 +143,21 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const WHATSAPP = "https://wa.me/9647729373260";
-    const MASTER_PASS = "BbZzAaMm"; // كلمة السر المطلوبة
+    const MASTER_PASS = "BbZzAaMm";
 
     const loginCard = document.getElementById("loginCard"), panel = document.getElementById("panel"), logoutBtn = document.getElementById("logoutBtn");
     const imgInput = document.getElementById("imgInput"), preview = document.getElementById("preview"), saveBtn = document.getElementById("saveBtn"), saveMsg = document.getElementById("saveMsg");
     const titleEl = document.getElementById("title"), priceEl = document.getElementById("price"), starsEl = document.getElementById("stars");
     const descEl = document.getElementById("description"), demoUrlEl = document.getElementById("demoUrl"), isOpenEl = document.getElementById("isOpen");
-    const vidsEl = document.getElementById("driveVideos"), imgsEl = document.getElementById("driveImages");
+    const vidsEl = document.getElementById("driveVideos");
+    // تعريف عناصر صور المعرض الجديدة
+    const galleryInput = document.getElementById("galleryInput");
+    const galleryPreview = document.getElementById("galleryPreview");
 
-    let imageDataURL = "";
+    let imageDataURL = ""; // صورة الغلاف
+    let galleryImagesData = []; // مصفوفة صور المعرض
 
-    // ✅ نظام الدخول اليدوي بكلمة السر
+    // نظام الدخول
     function checkAuthStatus() {
       if(sessionStorage.getItem("isAdmin") === "true") {
         loginCard.classList.add("hidden");
@@ -177,16 +186,14 @@
       location.reload();
     };
 
-    // تشغيل الفحص عند التحميل
     checkAuthStatus();
 
-    // التنقل
     document.getElementById("openAdd").onclick = showAdd;
     document.getElementById("openList").onclick = showList;
     function showAdd() { addBox.classList.remove("hidden"); listBox.classList.add("hidden"); }
     function showList() { listBox.classList.remove("hidden"); addBox.classList.add("hidden"); loadList(); }
 
-    // معالجة الصورة
+    // معالجة صورة الغلاف (Thumbnail)
     imgInput.onchange = e => {
       const file = e.target.files[0];
       if(!file) return;
@@ -195,13 +202,33 @@
       reader.readAsDataURL(file);
     };
 
+    // معالجة صور المعرض (تعديل: إضافة تراكمية لا نهائية)
+    galleryInput.onchange = e => {
+      // لا نقوم بتصفير المصفوفة هنا للسماح بالإضافة
+      const files = e.target.files;
+      if (!files.length) return;
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const b64 = ev.target.result;
+          galleryImagesData.push(b64); // إضافة للصور الموجودة
+          
+          // إنشاء معاينة صغيرة وإضافتها للقائمة الموجودة
+          const img = document.createElement("img");
+          img.src = b64;
+          galleryPreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
     // الحفظ
     saveBtn.onclick = async () => {
       if(!imageDataURL || !titleEl.value) return alert("الرجاء إكمال البيانات الأساسية");
       saveMsg.textContent = "جاري الحفظ...";
       
       const vids = vidsEl.value.split('\n').map(l => l.trim()).filter(l => l !== "");
-      const imgs = imgsEl.value.split('\n').map(l => l.trim()).filter(l => l !== "");
 
       try {
         await addDoc(collection(db, "projects"), {
@@ -212,7 +239,7 @@
           demoUrl: demoUrlEl.value.trim(),
           isOpen: isOpenEl.value === "true",
           driveVideos: vids,
-          driveImages: imgs,
+          driveImages: galleryImagesData, // حفظ جميع الصور المضافة
           imageData: imageDataURL,
           whatsappLink: WHATSAPP,
           createdAt: serverTimestamp()
