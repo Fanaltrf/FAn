@@ -74,12 +74,21 @@
       padding: 20px;
     }
 
-    /* --- Projects Grid --- */
+    /* --- Projects Grid (تعديل الشبكة للظهور 2 في السطر على الهاتف) --- */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      /* للشاشات الكبيرة: يبقى كما هو مرن */
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
       margin-top: 20px;
+    }
+
+    /* ميديا كويري للشاشات الصغيرة (الهواتف) لإجبار عرض عنصرين في السطر */
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr); /* عمودين متساويين */
+        gap: 15px; /* تقليل المسافة قليلاً */
+      }
     }
 
     .card {
@@ -93,9 +102,11 @@
 
     .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 
+    /* --- تعديل الصورة لتكون مربعة 1:1 --- */
     .card-img {
       width: 100%;
-      height: 180px;
+      /* height: 180px; <-- تم إزالة الطول الثابت */
+      aspect-ratio: 1 / 1; /* <-- جعل الصورة مربعة تماماً */
       object-fit: cover;
       background: #000;
     }
