@@ -3,7 +3,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>معرض كود فن التكنولوجيا الحديثة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,7 +27,13 @@
       min-height: 100vh;
       padding-bottom: 50px;
       overflow-x: hidden;
+      /* منع تحديد النصوص ليظهر كتطبيق */
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    input, textarea { -webkit-user-select: text; user-select: text; }
 
     /* --- Splash Screen --- */
     #splash-screen {
@@ -57,7 +63,7 @@
 
     /* --- Header --- */
     .header {
-      padding: 15px 20px;
+      padding: 15px;
       text-align: center;
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(12px);
@@ -68,7 +74,7 @@
     }
     
     .logo { 
-      font-size: 1.3rem; 
+      font-size: 1.2rem; 
       font-weight: 800; 
       background: linear-gradient(45deg, var(--primary), var(--accent)); 
       -webkit-background-clip: text; 
@@ -78,25 +84,28 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 15px;
+      padding: 10px; /* تقليل الهوامش الجانبية للهاتف */
     }
 
-    /* --- Grid System --- */
+    /* --- Grid System (التعديل الأساسي هنا) --- */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      /* للشاشات الكبيرة */
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 15px;
       margin-top: 20px;
     }
 
+    /* إجبار الهاتف على عرض عنصرين في السطر */
     @media (max-width: 600px) {
       .grid {
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* قسمين متساويين بالضبط */
+        gap: 10px; /* مسافة أقل بين الكروت لتوفير مساحة */
       }
     }
 
-    /* --- Card Design (المعدل) --- */
+    /* --- Card Design --- */
     .card {
       background: var(--card-bg);
       border: 1px solid rgba(255,255,255,0.08);
@@ -108,11 +117,7 @@
       flex-direction: column;
     }
 
-    .card:hover { 
-      transform: translateY(-5px); 
-      border-color: var(--primary); 
-      box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2); 
-    }
+    .card:active { transform: scale(0.98); }
 
     .card-img {
       width: 100%;
@@ -124,53 +129,49 @@
 
     .card-price {
       position: absolute;
-      top: 8px; left: 8px;
+      top: 6px; left: 6px;
       background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(4px);
       color: var(--accent);
-      padding: 4px 10px;
-      border-radius: 20px;
+      padding: 3px 8px;
+      border-radius: 15px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* تنسيق المحتوى داخل البطاقة ليكون أنيقاً */
     .card-body { 
-      padding: 12px; 
+      padding: 10px; 
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    /* تعديل العنوان ليكون صغيراً وأنيقاً */
     .card-title { 
-      font-size: 0.95rem; /* تصغير الخط */
+      font-size: 0.85rem; /* تصغير الخط قليلاً ليناسب العرض الثنائي */
       font-weight: 600; 
-      margin-bottom: 6px; 
-      line-height: 1.4;
+      margin-bottom: 5px; 
+      line-height: 1.3;
       color: #e0e0e0;
-      
-      /* جعل العنوان لا يتجاوز سطرين */
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 2; /* سطرين كحد أقصى */
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
-      height: 2.8em; /* تثبيت الارتفاع لتوحيد البطاقات */
+      height: 2.6em; 
     }
 
     .meta-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      font-size: 0.75rem;
+      margin-bottom: 8px;
+      font-size: 0.65rem;
       color: #aaa;
     }
 
-    .stars { color: var(--gold); letter-spacing: 1px; }
+    .stars { color: var(--gold); letter-spacing: 0px; }
 
     .btn {
       display: block;
@@ -180,19 +181,15 @@
       border-radius: 6px;
       background: rgba(255,255,255,0.08);
       color: var(--primary);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
       text-align: center;
       text-decoration: none;
       border: 1px solid rgba(108, 92, 231, 0.3);
     }
     
-    .btn:hover { 
-      background: var(--primary); 
-      color: #fff; 
-    }
+    .btn:active { background: var(--primary); color: #fff; }
 
     /* --- Modal --- */
     .modal-overlay {
@@ -200,9 +197,9 @@
       background: rgba(0,0,0,0.9);
       backdrop-filter: blur(8px);
       z-index: 2000;
-      display: none; /* Hidden by default */
+      display: none;
       justify-content: center;
-      align-items: flex-end; /* Mobile friendly bottom sheet style or center */
+      align-items: flex-end; 
     }
     @media(min-width: 600px) { .modal-overlay { align-items: center; } }
 
@@ -212,7 +209,7 @@
       width: 100%;
       max-width: 700px;
       border-radius: 20px 20px 0 0;
-      padding: 25px;
+      padding: 20px;
       position: relative;
       max-height: 85vh;
       overflow-y: auto;
@@ -225,8 +222,8 @@
     .close-modal {
       position: absolute; top: 15px; left: 15px;
       background: rgba(255,255,255,0.1); border: none;
-      color: #fff; width: 32px; height: 32px; border-radius: 50%;
-      cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+      color: #fff; width: 30px; height: 30px; border-radius: 50%;
+      cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
     }
 
     .gallery-grid {
@@ -237,39 +234,32 @@
     }
     
     .gallery-img {
-      width: 100%;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.1);
+      width: 100%; height: 80px; object-fit: cover;
+      border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Buttons inside Modal */
     .action-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-buy { background: #25D366; color: #fff; flex: 1; border: none; }
-    .btn-demo { background: var(--primary); color: #fff; flex: 1; border: none; }
+    .btn-buy { background: #25D366; color: #fff; flex: 1; border: none; padding: 12px; border-radius:8px;}
+    .btn-demo { background: var(--primary); color: #fff; flex: 1; border: none; padding: 12px; border-radius:8px;}
     .btn-disabled { background: #444; cursor: not-allowed; opacity: 0.6; filter: grayscale(1); }
 
     /* Search */
     .search-box {
       width: 100%;
       max-width: 500px;
-      margin: 0 auto 25px;
+      margin: 0 auto 20px;
       position: relative;
     }
     .search-input {
       width: 100%;
-      padding: 12px 40px 12px 15px;
+      padding: 10px 40px 10px 15px;
       border-radius: 25px;
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(255,255,255,0.05);
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: 0.3s;
     }
-    .search-input:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
     .search-icon {
       position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
       color: rgba(255,255,255,0.4);
@@ -295,7 +285,7 @@
     </div>
 
     <div id="projectsList" class="grid">
-      <div style="text-align:center; grid-column: 1/-1; padding: 20px; color:#aaa;">جاري جلب الأعمال الرائعة...</div>
+      <div style="text-align:center; grid-column: 1/-1; padding: 20px; color:#aaa;">جاري جلب الأعمال...</div>
     </div>
 
   </div>
@@ -304,16 +294,16 @@
     <div class="modal-content">
       <button class="close-modal" onclick="closeModal()">✕</button>
       
-      <img id="mImage" src="" style="width:100%; max-height:250px; object-fit:cover; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">
+      <img id="mImage" src="" style="width:100%; max-height:220px; object-fit:cover; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">
       
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-        <h2 id="mTitle" style="font-size:1.3rem;">عنوان المشروع</h2>
-        <div id="mPrice" style="color:var(--accent); font-weight:800; font-size:1.1rem;">$0</div>
+        <h2 id="mTitle" style="font-size:1.1rem;">عنوان المشروع</h2>
+        <div id="mPrice" style="color:var(--accent); font-weight:800; font-size:1rem;">$0</div>
       </div>
       
-      <div id="mStars" class="stars" style="margin-bottom:15px; font-size:0.9rem;"></div>
+      <div id="mStars" class="stars" style="margin-bottom:15px; font-size:0.8rem;"></div>
       
-      <p id="mDesc" style="color:#ccc; line-height:1.6; font-size:0.9rem; white-space: pre-wrap; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;">وصف...</p>
+      <p id="mDesc" style="color:#ccc; line-height:1.6; font-size:0.85rem; white-space: pre-wrap; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;">وصف...</p>
 
       <h4 style="margin-top:20px; font-size:0.9rem; color:#aaa;">المعرض</h4>
       <div id="mGallery" class="gallery-grid"></div>
@@ -383,6 +373,7 @@
         
         const div = document.createElement('div');
         div.className = 'card';
+        div.setAttribute('ontouchstart', '');
         div.innerHTML = `
           <img src="${p.imageData}" class="card-img" loading="lazy">
           <div class="card-price">$${p.price}</div>
@@ -390,7 +381,7 @@
             <div>
               <div class="meta-info">
                  <span class="stars">${starsHTML}</span>
-                 <span style="font-size:0.7rem; opacity:0.7">كود جاهز</span>
+                 <span style="font-size:0.6rem; opacity:0.7">كود</span>
               </div>
               <div class="card-title">${p.title}</div>
             </div>
@@ -407,14 +398,11 @@
       renderProjects(filtered);
     });
 
-    // --- FIX: إدارة زر الرجوع (History API) ---
-    // عندما نفتح المشروع، نضيف "حالة" للتاريخ. عندما يضغط المستخدم رجوع، نغلق النافذة بدلاً من الخروج.
-    
+    // --- Back Button Logic ---
     window.openProject = (id) => {
       const p = allProjects.find(x => x.id === id);
       if(!p) return;
 
-      // 1. تعبئة البيانات
       document.getElementById('mImage').src = p.imageData;
       document.getElementById('mTitle').innerText = p.title;
       document.getElementById('mPrice').innerText = "$" + p.price;
@@ -444,7 +432,7 @@
           const img = document.createElement('img');
           img.src = imgData;
           img.className = 'gallery-img';
-          img.onclick = () => window.open(imgData);
+          img.onclick = () => window.open(imgData); 
           galleryBox.appendChild(img);
         });
       }
@@ -461,24 +449,18 @@
         });
       }
 
-      // 2. إظهار النافذة
       document.getElementById('projectModal').style.display = 'flex';
-
-      // 3. إضافة "نقطة رجوع" وهمية للمتصفح لحل مشكلة الخروج
-      history.pushState({ modalOpen: true }, null, "#project_details");
+      history.pushState({ modalOpen: true }, null, "#project");
     };
 
     window.closeModal = () => {
       document.getElementById('projectModal').style.display = 'none';
-      // إذا كان الرابط يحتوي على الهاش، نرجع خطوة للخلف لإزالته
-      if (window.location.hash === "#project_details") {
+      if (window.location.hash === "#project") {
         history.back();
       }
     };
 
-    // الاستماع لزر الرجوع في الهاتف
     window.addEventListener('popstate', (event) => {
-      // عند ضغط رجوع، نغلق النافذة
       document.getElementById('projectModal').style.display = 'none';
     });
 
