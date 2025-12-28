@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة الأدمن - معرض كود فن التكنولوجيا الحديثة</title>
+  <title>لوحة الأدمن - إضافة عنوان</title>
   <style>
     :root{
       --bg:#0f0c29; --card:rgba(255,255,255,0.08);
@@ -28,20 +28,57 @@
     .btn.primary{background:linear-gradient(135deg,var(--p),var(--s));border:0}
     .btn.ok{background:var(--ok);border:0}
     .btn.danger{background:rgba(255,77,77,0.15);border:1px solid rgba(255,77,77,0.35)}
+    
     input, textarea, select{
       width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);
       background:rgba(0,0,0,0.25); color:#fff; outline:none; margin-bottom: 5px;
     }
-    textarea{min-height:80px;resize:vertical}
-    label{display:block;margin:10px 0 5px;font-weight:700; color:var(--s); font-size:0.9rem}
+    textarea{min-height:100px;resize:vertical}
+    label{display:block;margin:12px 0 6px;font-weight:700; color:var(--s); font-size:0.9rem}
     .hidden{display:none !important}
     .hr{height:1px;background:rgba(255,255,255,0.10);margin:14px 0}
-    .thumb{width:100%;max-height:200px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,0.12)}
+    
+    /* تنسيق الصورة 16:9 */
+    .img-upload-box {
+        width: 100%;
+        position: relative;
+        aspect-ratio: 16/9; 
+        background: rgba(255,255,255,0.05);
+        border: 2px dashed rgba(255,255,255,0.2);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+    .img-upload-box:hover { border-color: var(--p); }
+    .img-upload-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0; left: 0;
+    }
+    .img-upload-box input {
+        position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;
+    }
+    .placeholder-text { pointer-events: none; color: rgba(255,255,255,0.5); }
+
+    /* تنسيق الحقول المزدوجة */
+    .link-group {
+        background: rgba(0,0,0,0.2);
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+        margin-bottom: 10px;
+    }
+    .link-group label { margin-top: 0; font-size: 0.8rem; color: #ccc; }
+
     .list{display:grid;gap:10px}
     .item{display:flex;gap:10px;align-items:center;justify-content:space-between}
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.10);font-size:.75rem}
-    .gallery-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    .gallery-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
   </style>
 </head>
 <body>
@@ -49,14 +86,13 @@
     <div class="top">
       <div>
         <div class="brand">لوحة الأدمن</div>
-        <div class="muted" style="font-size: 0.8rem; opacity: 0.7;">تجهيز الأعمال للمعرض</div>
+        <div class="muted" style="font-size: 0.8rem; opacity: 0.7;">تجهيز الأعمال - مع العنوان</div>
       </div>
       <button id="logoutBtn" class="btn danger hidden" style="max-width:120px; padding: 10px;">خروج</button>
     </div>
 
     <div id="loginCard" class="card">
       <h3 style="margin:0 0 10px;color:var(--s)">دخول الإدارة</h3>
-      <div class="muted" style="font-size: 0.8rem; margin-bottom: 15px;">يرجى إدخال كلمة السر الخاصة بك للبدء.</div>
       <label>كلمة السر</label>
       <input id="password" type="password" placeholder="••••••••"/>
       <button id="loginBtn" class="btn primary" style="margin-top:15px">دخول</button>
@@ -71,51 +107,55 @@
 
       <div id="addBox" class="hidden" style="margin-top:14px">
         <div class="hr"></div>
-        <label>صورة الغلاف (Thumbnail)</label>
-        <input id="imgInput" type="file" accept="image/*"/>
-        <img id="preview" class="thumb hidden" style="margin-top:10px"/>
 
-        <div class="grid2">
-          <div>
-            <label>عنوان العمل</label>
-            <input id="title" type="text" placeholder="اسم الخدمة"/>
-          </div>
-          <div>
-            <label>السعر (بالدولار الأمريكي)</label>
-            <input id="price" type="number" placeholder="مثلاً: 50"/>
-          </div>
+        <label>صورة الغلاف (قياس 16:9)</label>
+        <div class="img-upload-box">
+            <span class="placeholder-text">اضغط لرفع صورة</span>
+            <img id="preview" class="hidden"/>
+            <input id="imgInput" type="file" accept="image/*"/>
         </div>
 
-        <label>التقييم (النجوم)</label>
-        <select id="stars">
-          <option value="5">★★★★★ (5 نجوم)</option>
-          <option value="4">★★★★☆ (4 نجوم)</option>
-          <option value="3">★★★☆☆ (3 نجوم)</option>
-          <option value="2">★★☆☆☆ (2 نجوم)</option>
-          <option value="1">★☆☆☆☆ (1 نجمة)</option>
-        </select>
+        <label>عنوان العمل</label>
+        <input id="workTitle" type="text" placeholder="مثلاً: تصميم موقع إلكتروني متكامل" />
 
-        <label>الوصف (يظهر داخل المعاينة)</label>
-        <textarea id="description" placeholder="اشرح تفاصيل الخدمة..."></textarea>
+        <div class="link-group">
+            <label>بيانات الزر الأول (الأساسي)</label>
+            <div class="grid2" style="gap:5px">
+                <input id="btn1Name" type="text" placeholder="اسم الزر (مثلاً: معاينة)"/>
+                <input id="btn1Link" type="url" placeholder="الرابط (https://...)"/>
+            </div>
+        </div>
 
-        <label>رابط الموقع المباشر</label>
-        <input id="demoUrl" type="url" placeholder="https://example.com"/>
+        <div class="link-group">
+            <label>بيانات الزر الثاني (الإضافي)</label>
+            <div class="grid2" style="gap:5px">
+                <input id="btn2Name" type="text" placeholder="اسم الزر (مثلاً: فيديو)"/>
+                <input id="btn2Link" type="url" placeholder="الرابط (https://...)"/>
+            </div>
+        </div>
 
-        <label>حالة الدخول للموقع</label>
-        <select id="isOpen">
-          <option value="true">مفتوح (يسمح بالدخول)</option>
-          <option value="false">مغلق (حقوق ملكية)</option>
-        </select>
+        <label>الوصف</label>
+        <textarea id="description" placeholder="اكتب تفاصيل ووصف العمل هنا..."></textarea>
 
-        <label>روابط فيديوهات درايف (كل رابط في سطر)</label>
-        <textarea id="driveVideos" placeholder="رابط 1&#10;رابط 2"></textarea>
-
-        <label>صور المعرض (إضافة لا نهائية)</label>
-        <input id="galleryInput" type="file" accept="image/*" multiple />
-        <div id="galleryPreview" class="gallery-preview"></div>
+        <div class="grid2">
+            <div>
+                <label>التقييم</label>
+                <select id="stars">
+                  <option value="5">★★★★★ (5 نجوم)</option>
+                  <option value="4">★★★★☆ (4 نجوم)</option>
+                  <option value="3">★★★☆☆ (3 نجوم)</option>
+                  <option value="2">★★☆☆☆ (2 نجوم)</option>
+                  <option value="1">★☆☆☆☆ (1 نجمة)</option>
+                </select>
+            </div>
+            <div>
+                <label>السعر ($)</label>
+                <input id="price" type="number" placeholder="0.00"/>
+            </div>
+        </div>
 
         <div style="height:12px"></div>
-        <button id="saveBtn" class="btn primary">حفظ ونشر العمل ✅</button>
+        <button id="saveBtn" class="btn primary">حفظ العمل ✅</button>
         <div id="saveMsg" style="margin-top:10px; font-size:0.9rem"></div>
       </div>
 
@@ -141,23 +181,24 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const WHATSAPP = "https://wa.me/9647729373260";
     const MASTER_PASS = "BbZzAaMm";
 
     const loginCard = document.getElementById("loginCard"), panel = document.getElementById("panel"), logoutBtn = document.getElementById("logoutBtn");
-    const imgInput = document.getElementById("imgInput"), preview = document.getElementById("preview"), saveBtn = document.getElementById("saveBtn"), saveMsg = document.getElementById("saveMsg");
-    const titleEl = document.getElementById("title"), priceEl = document.getElementById("price"), starsEl = document.getElementById("stars");
-    const descEl = document.getElementById("description"), demoUrlEl = document.getElementById("demoUrl"), isOpenEl = document.getElementById("isOpen");
-    const vidsEl = document.getElementById("driveVideos");
-    // تعريف عناصر صور المعرض الجديدة
-    const galleryInput = document.getElementById("galleryInput");
-    const galleryPreview = document.getElementById("galleryPreview");
+    
+    // العناصر
+    const imgInput = document.getElementById("imgInput"), preview = document.getElementById("preview");
+    const titleEl = document.getElementById("workTitle"); // تم اضافة العنوان
+    const btn1NameEl = document.getElementById("btn1Name"), btn1LinkEl = document.getElementById("btn1Link");
+    const btn2NameEl = document.getElementById("btn2Name"), btn2LinkEl = document.getElementById("btn2Link");
+    const descEl = document.getElementById("description");
+    const starsEl = document.getElementById("stars");
+    const priceEl = document.getElementById("price");
+    
+    const saveBtn = document.getElementById("saveBtn"), saveMsg = document.getElementById("saveMsg");
 
-    let imageDataURL = ""; // صورة الغلاف
-    let galleryImagesData = []; // مصفوفة صور المعرض
+    let imageDataURL = ""; 
 
-    // دالة لضغط الصور (ضغط عالي جداً 5 أضعاف)
-    const compressImage = (file, quality = 0.2, maxWidth = 300) => {
+    const compressImage = (file, quality = 0.3, maxWidth = 800) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -168,7 +209,6 @@
             const canvas = document.createElement('canvas');
             let width = img.width;
             let height = img.height;
-            // تصغير الأبعاد بشكل كبير
             if (width > height) {
               if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
             } else {
@@ -178,14 +218,12 @@
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-            // ضغط الجودة إلى 0.2
             resolve(canvas.toDataURL('image/jpeg', quality));
           };
         };
       });
     };
 
-    // نظام الدخول
     function checkAuthStatus() {
       if(sessionStorage.getItem("isAdmin") === "true") {
         loginCard.classList.add("hidden");
@@ -221,54 +259,38 @@
     function showAdd() { addBox.classList.remove("hidden"); listBox.classList.add("hidden"); }
     function showList() { listBox.classList.remove("hidden"); addBox.classList.add("hidden"); loadList(); }
 
-    // معالجة صورة الغلاف (ضغط قوي 0.3)
     imgInput.onchange = async e => {
       const file = e.target.files[0];
       if(!file) return;
-      imageDataURL = await compressImage(file, 0.3, 400);
+      imageDataURL = await compressImage(file, 0.4, 800);
       preview.src = imageDataURL;
       preview.classList.remove("hidden");
+      document.querySelector('.placeholder-text').style.display = 'none';
     };
 
-    // معالجة صور المعرض (ضغط قوي جداً 0.2 وعرض 300)
-    galleryInput.onchange = async e => {
-      const files = e.target.files;
-      if (!files.length) return;
-
-      for (const file of Array.from(files)) {
-        // ضغط شديد للصور المتعددة
-        const compressedBase64 = await compressImage(file, 0.2, 300);
-        
-        galleryImagesData.push(compressedBase64);
-        
-        const img = document.createElement("img");
-        img.src = compressedBase64;
-        galleryPreview.appendChild(img);
-      }
-    };
-
-    // الحفظ
     saveBtn.onclick = async () => {
-      if(!imageDataURL || !titleEl.value) return alert("الرجاء إكمال البيانات الأساسية");
+      // التحقق من العنوان والصورة
+      if(!imageDataURL || !titleEl.value) return alert("يرجى رفع الصورة وكتابة عنوان العمل");
       saveMsg.textContent = "جاري الحفظ...";
-      
-      const vids = vidsEl.value.split('\n').map(l => l.trim()).filter(l => l !== "");
 
       try {
         await addDoc(collection(db, "projects"), {
-          title: titleEl.value.trim(),
+          title: titleEl.value.trim(), // حفظ العنوان
+          
+          btn1_name: btn1NameEl.value.trim(),
+          btn1_url: btn1LinkEl.value.trim(),
+          
+          btn2_name: btn2NameEl.value.trim(),
+          btn2_url: btn2LinkEl.value.trim(),
+          
+          description: descEl.value.trim(),
           price: priceEl.value || "0",
           stars: parseInt(starsEl.value),
-          description: descEl.value.trim(),
-          demoUrl: demoUrlEl.value.trim(),
-          isOpen: isOpenEl.value === "true",
-          driveVideos: vids,
-          driveImages: galleryImagesData,
+          
           imageData: imageDataURL,
-          whatsappLink: WHATSAPP,
           createdAt: serverTimestamp()
         });
-        alert("تم النشر بنجاح! ✅");
+        alert("تم الحفظ بنجاح! ✅");
         location.reload();
       } catch(e) { saveMsg.textContent = "خطأ: " + e.message; }
     };
@@ -284,10 +306,10 @@
         div.className = "card"; div.style.marginBottom = "10px";
         div.innerHTML = `
           <div class="item">
-            <img src="${r.imageData}" style="width:50px; height:50px; border-radius:8px; object-fit:cover">
+            <img src="${r.imageData}" style="width:80px; aspect-ratio:16/9; border-radius:8px; object-fit:cover">
             <div style="flex:1; margin-right:10px">
               <div style="font-weight:bold">${r.title}</div>
-              <div class="pill">$${r.price}</div>
+              <div style="font-size:0.8rem; opacity:0.7">${r.price}$ - ${r.stars}★</div>
             </div>
             <button class="btn danger" style="width:70px; padding:5px">حذف</button>
           </div>`;
