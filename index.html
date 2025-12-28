@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>معرض كود فن التكنولوجيا الحديثة</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>معرض فن التكنولوجيا</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     :root {
       --bg: #0f0c29;
-      --card-bg: rgba(255, 255, 255, 0.07);
+      --card-bg: rgba(255, 255, 255, 0.05);
       --primary: #6c5ce7;
       --secondary: #a29bfe;
       --text: #ffffff;
@@ -27,12 +27,8 @@
       min-height: 100vh;
       padding-bottom: 80px;
       overflow-x: hidden;
-      -webkit-user-select: none;
-      user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-
-    input, textarea { -webkit-user-select: text; user-select: text; }
 
     /* --- Splash Screen --- */
     #splash-screen {
@@ -41,12 +37,10 @@
       display: flex; justify-content: center; align-items: center;
       z-index: 99999; transition: opacity 0.8s ease-out;
     }
-    
     .splash-text {
-      font-size: 1.8rem; font-weight: bold; color: var(--gold);
+      font-size: 1.5rem; font-weight: bold; color: var(--gold);
       text-align: center; animation: pulse 1.5s infinite;
     }
-
     @keyframes pulse {
       0% { opacity: 0.6; transform: scale(0.95); }
       50% { opacity: 1; transform: scale(1.05); }
@@ -55,96 +49,96 @@
 
     /* --- Header --- */
     .header {
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      position: sticky; top: 0; z-index: 100;
+      padding: 15px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05);
+      max-width: 600px; margin: 0 auto;
     }
-    
     .logo { 
       font-size: 1.1rem; font-weight: 800; 
       background: linear-gradient(45deg, var(--primary), var(--accent)); 
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
     }
-
     .visitor-badge {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        color: var(--accent);
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1); padding: 5px 10px; border-radius: 20px;
+        font-size: 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 5px;
+        font-weight: bold; letter-spacing: 1px;
     }
 
-    .container {
-      max-width: 1200px; margin: 0 auto; padding: 10px;
+    /* --- Container (Mobile Simulation) --- */
+    .container { 
+        max-width: 600px; 
+        margin: 0 auto; 
+        padding: 15px; 
     }
 
     /* --- Grid System --- */
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px; margin-top: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      display: grid; 
+      grid-template-columns: 1fr; /* عمود واحد دائماً */
+      gap: 25px; 
+      margin-top: 10px;
     }
 
     /* --- Card Design --- */
     .card {
       background: var(--card-bg);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px; overflow: hidden;
-      transition: 0.3s; position: relative;
-      display: flex; flex-direction: column;
+      border-radius: 16px; overflow: hidden;
+      position: relative; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
     }
     .card:active { transform: scale(0.98); }
 
+    .card-img-wrapper {
+        width: 100%;
+        aspect-ratio: 16 / 9; 
+        position: relative;
+    }
+
     .card-img {
-      width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
-      background: #000; border-bottom: 1px solid rgba(255,255,255,0.05);
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
     }
 
+    .card-overlay {
+        position: absolute;
+        bottom: 0; left: 0; width: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0.5) 60%, transparent 100%);
+        padding: 60px 15px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .card-info { flex: 1; }
+    
+    .card-title {
+        font-size: 1.1rem; font-weight: 700; color: #fff;
+        margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    
     .card-price {
-      position: absolute; top: 6px; left: 6px;
-      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
-      color: var(--accent); padding: 3px 8px; border-radius: 15px;
-      font-weight: 700; font-size: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.1);
+        font-size: 1rem; font-weight: 800; color: var(--accent);
+        background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 8px;
+        backdrop-filter: blur(4px);
+        margin-left: 10px;
     }
 
-    .card-body { 
-      padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;
-    }
+    .stars { color: var(--gold); font-size: 0.8rem; margin-top: 5px; }
 
-    .card-title { 
-      font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; line-height: 1.3;
-      color: #e0e0e0; display: -webkit-box; -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical; overflow: hidden; height: 2.6em; 
+    /* --- WhatsApp Button --- */
+    .whatsapp-float {
+        position: fixed; bottom: 20px; right: 20px;
+        background-color: #25D366; color: white;
+        width: 55px; height: 55px; border-radius: 50%;
+        display: flex; justify-content: center; align-items: center;
+        font-size: 30px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        z-index: 5000; text-decoration: none; transition: 0.3s;
+        border: 2px solid rgba(255,255,255,0.2);
     }
-
-    .meta-info {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 8px; font-size: 0.65rem; color: #aaa;
-    }
-
-    .stars { color: var(--gold); letter-spacing: 0px; }
-
-    .btn {
-      display: block; width: 100%; padding: 8px; border: none; border-radius: 6px;
-      background: rgba(255,255,255,0.08); color: var(--primary);
-      font-size: 0.8rem; font-weight: 600; cursor: pointer; text-align: center;
-      text-decoration: none; border: 1px solid rgba(108, 92, 231, 0.3);
-    }
-    .btn:active { background: var(--primary); color: #fff; }
+    .whatsapp-float:active { transform: scale(0.9); }
 
     /* --- Modal --- */
     .modal-overlay {
@@ -155,94 +149,55 @@
     @media(min-width: 600px) { .modal-overlay { align-items: center; } }
 
     .modal-content {
-      background: #151525; border: 1px solid rgba(255,255,255,0.15);
-      width: 100%; max-width: 700px; border-radius: 20px 20px 0 0;
-      padding: 20px; position: relative; max-height: 85vh; overflow-y: auto;
-      animation: slideUp 0.3s ease-out;
+      background: #151525; width: 100%; max-width: 600px;
+      border-radius: 20px 20px 0 0; padding: 25px; position: relative;
+      max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease-out;
+      border-top: 1px solid rgba(255,255,255,0.2);
     }
     @media(min-width: 600px) { .modal-content { border-radius: 16px; } }
-
     @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
 
     .close-modal {
       position: absolute; top: 15px; left: 15px;
-      background: rgba(255,255,255,0.1); border: none;
-      color: #fff; width: 30px; height: 30px; border-radius: 50%;
-      cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.1); border: none; color: #fff;
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      font-size: 1.2rem; z-index: 10;
     }
 
-    .gallery-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 8px; margin-top: 15px;
+    /* تنسيق الأزرار في مكانها الجديد */
+    .action-btns { 
+        display: flex; flex-direction: column; gap: 10px; 
+        margin-bottom: 15px; /* مسافة بين الأزرار والصورة */
     }
-    .gallery-img {
-      width: 100%; height: 80px; object-fit: cover;
-      border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+    .btn-main {
+        width: 100%; padding: 14px; border: none; border-radius: 12px;
+        font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center;
+        text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px;
     }
-
-    .action-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-buy { background: #25D366; color: #fff; flex: 1; border: none; padding: 12px; border-radius:8px;}
-    .btn-demo { background: var(--primary); color: #fff; flex: 1; border: none; padding: 12px; border-radius:8px;}
-    .btn-disabled { background: #444; cursor: not-allowed; opacity: 0.6; filter: grayscale(1); }
+    .btn-1 { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+    .btn-2 { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
 
     /* Search */
-    .search-box {
-      width: 100%; max-width: 500px; margin: 0 auto 20px; position: relative;
-    }
+    .search-box { width: 100%; margin: 0 auto 20px; position: relative; }
     .search-input {
-      width: 100%; padding: 10px 40px 10px 15px; border-radius: 25px;
+      width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);
-      color: #fff; font-size: 0.9rem; outline: none;
+      color: #fff; font-size: 1rem; outline: none;
     }
-    .search-icon {
-      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-      color: rgba(255,255,255,0.4);
-    }
+    .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
 
-    /* --- Image Lightbox (عارض الصور المطور) --- */
+    /* Viewer */
     #imageViewer {
-      display: none;
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.98); /* خلفية داكنة جداً للتركيز */
-      z-index: 10000;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.98); z-index: 10000;
       justify-content: center; align-items: center;
-      flex-direction: column;
-      overflow: hidden;
     }
-
-    #fullImage {
-      width: 100%;
-      max-width: 750px; /* العرض الذي طلبته */
-      height: auto;
-      max-height: 90vh; /* لا تتجاوز ارتفاع الشاشة */
-      object-fit: contain; /* عرض الصورة كاملة بدون قص */
-      border-radius: 4px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.8);
-      
-      /* حيلة لتحسين العرض */
-      image-rendering: -webkit-optimize-contrast; 
-    }
-
+    #fullImage { max-width: 100%; max-height: 100%; object-fit: contain; }
     .close-viewer {
-      position: absolute; top: 20px; right: 20px;
-      color: white; font-size: 2rem; cursor: pointer;
-      background: rgba(255,255,255,0.1); width: 45px; height: 45px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      z-index: 10001;
-      backdrop-filter: blur(5px);
+        position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem;
+        cursor: pointer; background: rgba(255,255,255,0.2); width: 50px; height: 50px;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
     }
-
-    /* WhatsApp Float */
-    .whatsapp-float {
-        position: fixed; bottom: 20px; right: 20px;
-        background-color: #25D366; color: white;
-        width: 60px; height: 60px; border-radius: 50%;
-        display: flex; justify-content: center; align-items: center;
-        font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        z-index: 5000; text-decoration: none; transition: 0.3s;
-    }
-    .whatsapp-float:hover { transform: scale(1.1); }
-
   </style>
 </head>
 <body>
@@ -251,8 +206,8 @@
     <div class="splash-text">اللهم صل على محمد وآل محمد</div>
   </div>
 
-  <div id="imageViewer" onclick="if(event.target === this) closeImageViewer()">
-    <div class="close-viewer" onclick="closeImageViewer()">×</div>
+  <div id="imageViewer" onclick="closeImageViewer()">
+    <div class="close-viewer">×</div>
     <img id="fullImage" src="">
   </div>
 
@@ -263,8 +218,8 @@
   <div class="header">
     <div class="logo"><i class="fas fa-code"></i> فن التكنولوجيا</div>
     <div class="visitor-badge">
-        <i class="fas fa-eye"></i>
-        <span id="visitorCount">...</span>
+        <i class="fas fa-users"></i>
+        <span id="visitorCount">1M+</span>
     </div>
   </div>
 
@@ -273,8 +228,9 @@
       <i class="fas fa-search search-icon"></i>
       <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن مشروع...">
     </div>
+    
     <div id="projectsList" class="grid">
-      <div style="text-align:center; grid-column: 1/-1; padding: 20px; color:#aaa;">جاري جلب الأعمال...</div>
+      <div style="text-align:center; padding: 20px; color:#aaa;">جاري جلب الأعمال...</div>
     </div>
   </div>
 
@@ -282,25 +238,20 @@
     <div class="modal-content">
       <button class="close-modal" onclick="closeModal()">✕</button>
       
-      <img id="mImage" src="" onclick="openImageViewer(this.src)" style="width:100%; max-height:220px; object-fit:cover; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1); cursor: zoom-in;">
-      
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-        <h2 id="mTitle" style="font-size:1.1rem;">عنوان المشروع</h2>
-        <div id="mPrice" style="color:var(--accent); font-weight:800; font-size:1rem;">$0</div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+        <div>
+            <h2 id="mTitle" style="font-size:1.3rem; margin-bottom:5px;"></h2>
+            <div id="mStars" class="stars"></div>
+        </div>
+        <div id="mPrice" style="color:var(--accent); font-weight:800; font-size:1.2rem;"></div>
       </div>
-      
-      <div id="mStars" class="stars" style="margin-bottom:15px; font-size:0.8rem;"></div>
-      
-      <p id="mDesc" style="color:#ccc; line-height:1.6; font-size:0.85rem; white-space: pre-wrap; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;">وصف...</p>
 
-      <h4 style="margin-top:20px; font-size:0.9rem; color:#aaa;">المعرض</h4>
-      <div id="mGallery" class="gallery-grid"></div>
-      <div id="mVideos" style="margin-top:10px; display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="dynamicBtns" class="action-btns"></div>
 
-      <div class="action-btns">
-        <a id="mDemoBtn" href="#" target="_blank" class="btn btn-demo">معاينة 👁️</a>
-        <a id="mBuyBtn" href="#" target="_blank" class="btn btn-buy">شراء <i class="fab fa-whatsapp"></i></a>
-      </div>
+      <img id="mImage" src="" onclick="openImageViewer(this.src)" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:12px; margin-bottom:15px; cursor:zoom-in;">
+      
+      <p id="mDesc" style="color:#ddd; line-height:1.7; font-size:0.95rem; white-space: pre-wrap; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px;"></p>
+
     </div>
   </div>
 
@@ -322,21 +273,30 @@
 
     let allProjects = [];
 
+    // --- تحديث العداد ليبدأ من مليون ---
     async function updateVisitorCount() {
         const statsRef = doc(db, "site_stats", "main_counter");
         const countSpan = document.getElementById("visitorCount");
         try {
             const docSnap = await getDoc(statsRef);
+
             if (docSnap.exists()) {
-                await updateDoc(statsRef, { visitors: increment(1) });
-                countSpan.innerText = (docSnap.data().visitors + 1).toLocaleString();
+                let currentCount = docSnap.data().visitors;
+                
+                if (currentCount < 1000000) {
+                    await updateDoc(statsRef, { visitors: 1000000 });
+                    countSpan.innerText = "1,000,000";
+                } else {
+                    await updateDoc(statsRef, { visitors: increment(1) });
+                    countSpan.innerText = (currentCount + 1).toLocaleString();
+                }
             } else {
-                await setDoc(statsRef, { visitors: 13859 });
-                countSpan.innerText = "13,859";
+                await setDoc(statsRef, { visitors: 1000000 });
+                countSpan.innerText = "1,000,000";
             }
-        } catch (error) {
-            console.error(error);
-            countSpan.innerText = "Error";
+        } catch (error) { 
+            console.error(error); 
+            countSpan.innerText = "1,000,000+";
         }
     }
     updateVisitorCount();
@@ -346,7 +306,7 @@
         const splash = document.getElementById('splash-screen');
         splash.style.opacity = '0';
         setTimeout(() => splash.style.display = 'none', 800);
-      }, 2500);
+      }, 2000);
     });
 
     async function loadProjects() {
@@ -360,7 +320,7 @@
         });
         renderProjects(allProjects);
       } catch (error) {
-        container.innerHTML = '<div style="text-align:center; width:100%">تأكد من الاتصال بالإنترنت</div>';
+        container.innerHTML = '<div style="text-align:center; padding:20px;">تأكد من الاتصال بالإنترنت</div>';
       }
     }
 
@@ -371,23 +331,25 @@
         container.innerHTML = '<div style="text-align:center; width:100%; color:#aaa;">لا توجد أعمال لعرضها</div>';
         return;
       }
+      
       projects.forEach(p => {
-        const starsHTML = '<i class="fas fa-star"></i>'.repeat(p.stars) + '<i class="far fa-star"></i>'.repeat(5 - p.stars);
+        const starsHTML = '<i class="fas fa-star"></i>'.repeat(p.stars || 5);
+        const displayTitle = p.title || p.btn1_name || "بدون عنوان";
+        
         const div = document.createElement('div');
         div.className = 'card';
-        div.setAttribute('ontouchstart', '');
+        div.onclick = () => openProject(p.id);
+        
         div.innerHTML = `
-          <img src="${p.imageData}" class="card-img" loading="lazy">
-          <div class="card-price">$${p.price}</div>
-          <div class="card-body">
-            <div>
-              <div class="meta-info">
-                 <span class="stars">${starsHTML}</span>
-                 <span style="font-size:0.6rem; opacity:0.7">كود</span>
-              </div>
-              <div class="card-title">${p.title}</div>
+          <div class="card-img-wrapper">
+            <img src="${p.imageData}" class="card-img" loading="lazy" alt="${displayTitle}">
+            <div class="card-overlay">
+                <div class="card-info">
+                    <div class="card-title">${displayTitle}</div>
+                    <div class="stars">${starsHTML}</div>
+                </div>
+                <div class="card-price">$${p.price}</div>
             </div>
-            <button class="btn" onclick="openProject('${p.id}')">التفاصيل</button>
           </div>
         `;
         container.appendChild(div);
@@ -396,69 +358,35 @@
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const val = e.target.value.toLowerCase();
-      renderProjects(allProjects.filter(p => p.title.toLowerCase().includes(val)));
+      renderProjects(allProjects.filter(p => (p.title || "").toLowerCase().includes(val)));
     });
-
-    // --- Image Viewer Logic (المعدل) ---
-    window.openImageViewer = (src) => {
-      const img = document.getElementById('fullImage');
-      img.src = src;
-      document.getElementById('imageViewer').style.display = 'flex';
-    };
-
-    window.closeImageViewer = () => {
-      document.getElementById('imageViewer').style.display = 'none';
-      document.getElementById('fullImage').src = ""; // تفريغ المصدر لتوفير الذاكرة
-    };
 
     window.openProject = (id) => {
       const p = allProjects.find(x => x.id === id);
       if(!p) return;
 
       document.getElementById('mImage').src = p.imageData;
-      document.getElementById('mTitle').innerText = p.title;
+      document.getElementById('mTitle').innerText = p.title || p.btn1_name;
       document.getElementById('mPrice').innerText = "$" + p.price;
-      document.getElementById('mDesc').innerText = p.description;
-      document.getElementById('mStars').innerHTML = '<i class="fas fa-star"></i>'.repeat(p.stars);
+      document.getElementById('mDesc').innerText = p.description || "لا يوجد وصف";
+      document.getElementById('mStars').innerHTML = '<i class="fas fa-star"></i>'.repeat(p.stars || 5);
 
-      const demoBtn = document.getElementById('mDemoBtn');
-      if(p.isOpen) {
-        demoBtn.href = p.demoUrl;
-        demoBtn.classList.remove('btn-disabled');
-        demoBtn.innerHTML = `معاينة <i class="fas fa-eye"></i>`;
-        demoBtn.style.pointerEvents = "auto";
-      } else {
-        demoBtn.href = "#";
-        demoBtn.classList.add('btn-disabled');
-        demoBtn.innerHTML = `معاينة مغلقة <i class="fas fa-lock"></i>`;
-        demoBtn.style.pointerEvents = "none";
+      const btnsContainer = document.getElementById('dynamicBtns');
+      btnsContainer.innerHTML = '';
+
+      if(p.btn1_name && p.btn1_url) {
+          const btn1 = document.createElement('a');
+          btn1.className = 'btn-main btn-1';
+          btn1.href = p.btn1_url; btn1.target = '_blank';
+          btn1.innerHTML = `<i class="fas fa-eye"></i> ${p.btn1_name}`;
+          btnsContainer.appendChild(btn1);
       }
-
-      const msg = `مرحباً، أرغب بشراء كود: ${p.title} بسعر ${p.price}$`;
-      document.getElementById('mBuyBtn').href = `${p.whatsappLink}?text=${encodeURIComponent(msg)}`;
-
-      const galleryBox = document.getElementById('mGallery');
-      galleryBox.innerHTML = '';
-      if(p.driveImages && Array.isArray(p.driveImages)) {
-        p.driveImages.forEach(imgData => {
-          const img = document.createElement('img');
-          img.src = imgData;
-          img.className = 'gallery-img';
-          img.onclick = () => window.openImageViewer(imgData); 
-          galleryBox.appendChild(img);
-        });
-      }
-
-      const videoBox = document.getElementById('mVideos');
-      videoBox.innerHTML = '';
-      if(p.driveVideos && Array.isArray(p.driveVideos)) {
-        p.driveVideos.forEach((vidUrl, index) => {
-          const a = document.createElement('a');
-          a.href = vidUrl; a.target = "_blank"; a.className = "btn";
-          a.style.background = "#222"; a.style.marginTop = "0";
-          a.innerHTML = `<i class="fas fa-play-circle"></i> فيديو شرح ${index + 1}`;
-          videoBox.appendChild(a);
-        });
+      if(p.btn2_name && p.btn2_url) {
+          const btn2 = document.createElement('a');
+          btn2.className = 'btn-main btn-2';
+          btn2.href = p.btn2_url; btn2.target = '_blank';
+          btn2.innerHTML = `<i class="fas fa-link"></i> ${p.btn2_name}`;
+          btnsContainer.appendChild(btn2);
       }
 
       document.getElementById('projectModal').style.display = 'flex';
@@ -468,6 +396,14 @@
     window.closeModal = () => {
       document.getElementById('projectModal').style.display = 'none';
       if (window.location.hash === "#project") history.back();
+    };
+    
+    window.openImageViewer = (src) => {
+      document.getElementById('fullImage').src = src;
+      document.getElementById('imageViewer').style.display = 'flex';
+    };
+    window.closeImageViewer = () => {
+      document.getElementById('imageViewer').style.display = 'none';
     };
 
     window.addEventListener('popstate', () => {
